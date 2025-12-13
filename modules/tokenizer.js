@@ -52,6 +52,26 @@ export const Token = Object.freeze({
 
     EOF: "eof",
     RETURN: "return",
+
+    isOperator: function(token) {
+        return isOperator(token);
+    },
+
+    isType: function(token) {
+        return isType(token);
+    },
+
+    isNumber: function(token) {
+        return token.type === "number"
+    },
+
+    isLiteral: function(token) {
+        return token.type === "literal"
+    },
+
+    isComment: function(token) {
+        return token.type === "comment"
+    }
 })
 
 const EndOfCharacters = " \t\n;"
@@ -119,6 +139,14 @@ const Types = Object.freeze([
     Token.TYPE_MAT4,
     Token.TYPE_QUAT,
 ])
+
+function isOperator(token) {
+    return Operators.includes(token)
+}
+
+function isType(token) {
+    return Types.includes(token)
+}
 
 class TokenizerTemplate {
     #allowedCharacters
