@@ -1,6 +1,7 @@
 export const Token = Object.freeze({
     LITERAL: "literal",
     NUMBER: "number",
+    COMMENT: "comment",
 
     ASSIGN: "=",
     ADD: "+",
@@ -44,6 +45,7 @@ export const Token = Object.freeze({
     RSQ_BRACKET: "]",
     COMMA: ",",
     SEMI: ";",
+    DOT: ".",
 
     LAMBDA: "=>",
     FUNCTION: "fun",
@@ -52,18 +54,10 @@ export const Token = Object.freeze({
     RETURN: "return",
 })
 
-const EndOfCharacters = Object.freeze(
-    [
-        " ", "\t", "\n", Token.SEMI
-    ]
-)
+const EndOfCharacters = " \t\n;"
 
 // quiet in the sense that they are not added to tokens like eof
-const SilentEndOfCharacters = Object.freeze(
-    [
-        " ", "\t",
-    ]
-)
+const SilentEndOfCharacters = " \t"
 
 const Characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 
@@ -104,6 +98,7 @@ const Operators = Object.freeze([
     Token.RSQ_BRACKET,
 
     Token.COMMA,
+    Token.DOT,
 
     Token.FUNCTION,
     Token.LAMBDA,
@@ -111,7 +106,7 @@ const Operators = Object.freeze([
     Token.RETURN
 ])
 
-const OperatorsCharacters = ",+-*/><=|&^~%()[]{}"
+const OperatorsCharacters = ".,+-*/><=|&^~%()[]{}"
 
 const Types = Object.freeze([
     Token.TYPE_INT,
@@ -125,95 +120,200 @@ const Types = Object.freeze([
     Token.TYPE_QUAT,
 ])
 
+class TokenizerTemplate {
+    #name
+    #allowedCharacters
+    #identifyCharacters
+    #tokenFunction
+    #candidateFunction
+
+    constructor(
+        name,
+        allowedCharacters, identifyCharacters,
+        tokenFunction, candidateFunction
+    ) {
+        this.#name = name
+        this.#allowedCharacters = allowedCharacters
+        this.#identifyCharacters = identifyCharacters
+        this.#tokenFunction = tokenFunction
+        this.#candidateFunction = candidateFunction
+    }
+
+    getName() {
+        return this.#name
+    }
+
+    #contains(charactersArray, char) {
+        for(const str of charactersArray) {
+            if(str.includes(char))
+                return true
+        }
+
+        return false
+    }
+
+    isAllowedCharacter(char) {
+        if(typeof this.#allowedCharacters === "function")
+            return this.#allowedCharacters(char)
+        else
+            return this.#contains(this.#allowedCharacters, char)
+    }
+
+    canStartFrom(char) {
+        return this.#contains(this.#identifyCharacters, char)
+    }
+
+    pushToken(i, buffer, tokens, errors) {
+        this.#tokenFunction(i, buffer, tokens, errors)
+    }
+
+    isCandidate(buffer) {
+        return this.#candidateFunction != null ? this.#candidateFunction(buffer) : true;
+    }
+}
+
+const Tokenizers = Object.freeze({
+    string: new TokenizerTemplate(
+        "string",
+        [ Characters, Digits ],
+        [ Characters ],
+        function(i, buffer, tokens, errors) {
+            if(Operators.includes(buffer) || Types.includes(buffer))
+                tokens.push([ buffer ]) // buffer passed as token type
+            else
+                tokens.push([ Token.LITERAL, buffer ])
+        }
+    ),
+
+    digits: new TokenizerTemplate(
+        "digits",
+        [ Digits, Dot ],
+        [ Digits ],
+        function(i, buffer, tokens, errors) {
+            const num = Number(buffer)
+
+            if(!Number.isNaN(num) && buffer !== '') {
+                tokens.push([ Token.NUMBER, num ])
+            } else {
+                const index = i - buffer.length + 1
+                errors.push(`invalid number '${buffer}' at '${index}'`, index)
+            }
+        }
+    ),
+
+    operators: new TokenizerTemplate(
+        "operators",
+        [ OperatorsCharacters ],
+        [ OperatorsCharacters ],
+        function(i, buffer, tokens, errors) {
+            if(Operators.includes(buffer)) {
+                tokens.push([ buffer ]) // buffer passed as token type
+            } else {
+                const index = i - buffer.length + 1
+                errors.push(`invalid operator '${buffer}' at '${index}'`, index)
+            }
+        },
+        function(buffer) {
+            return Operators.includes(buffer)
+        }
+    ),
+
+    comments: new TokenizerTemplate(
+        "comments",
+        function(char) {
+            return char !== '\n'
+        },
+        [ "#" ],
+        function(i, buffer, tokens, errors) {
+            tokens.push([ Token.COMMENT, buffer.substring(1) ])
+        }
+    )
+})
+
+const IgnoredCharacters = Object.freeze([
+    EndOfCharacters
+])
+
 export function tokenize(code) {
     code += ";"
 
     let errors = [ ]
     let tokens = [ ]
 
-    let parsingString = false
-    let parsingDigits = false
-    let parsingOperator = false
+    let currentTokenizer = null
 
     let buffer = ""
 
     for (let i = 0; i < code.length; i++) {
         const char = code[i]
 
-        if(parsingString) {
-
-            if(Characters.includes(char) || Digits.includes(char)) {
+        if(currentTokenizer !== null) {
+            if(
+                Tokenizers[currentTokenizer].isAllowedCharacter(char) &&
+                (
+                    Tokenizers[currentTokenizer].isCandidate(buffer) &&
+                    Tokenizers[currentTokenizer].isCandidate(buffer + char)
+                )
+            ) {
                 buffer += char
-                continue
             } else {
-                if(Operators.includes(buffer) || Types.includes(buffer))
-                    tokens.push([ buffer ]) // buffer passed as token type
-                else
-                    tokens.push([ Token.LITERAL, buffer ])
+                Tokenizers[currentTokenizer].pushToken(i, buffer, tokens, errors)
 
                 if(EndOfCharacters.includes(char)) {
                     if(!SilentEndOfCharacters.includes(char))
                         tokens.push([ Token.EOF ])
                 } else i--;
+
+                currentTokenizer = null
+                buffer = ""
+            }
+        } else {
+            let found = false
+
+            for (const tokenizer in Tokenizers) {
+                if(Tokenizers[tokenizer].canStartFrom(char)) {
+                    buffer += char
+                    currentTokenizer = tokenizer
+                    found = true
+                    break
+                }
             }
 
-            parsingString = false
-        } else if(parsingDigits) {
-            if(Digits.includes(char) || char === Dot) {
-                buffer += char
-                continue
-            } else {
-                const num = Number(buffer)
+            if(!found) {
+                let mustIgnore = false
 
-                if(!Number.isNaN(num) && buffer !== '') {
-                    tokens.push([ Token.NUMBER, num ])
-                } else {
-                    const index = i - buffer.length + 1
-                    errors.push(`invalid number '${buffer}' at '${index}'`, index)
+                for(const ignoredSequence of IgnoredCharacters) {
+                    if(ignoredSequence.includes(char)) {
+                        mustIgnore = true
+                        break
+                    }
                 }
 
-                if(EndOfCharacters.includes(char)) {
-                    if(!SilentEndOfCharacters.includes(char))
-                        tokens.push([ Token.EOF ])
-                } else i--;
+                if(!mustIgnore)
+                    errors.push(`unknown character '${char}' at '${i + 1}'`)
             }
-
-            parsingDigits = false
-        } else if(parsingOperator) {
-            if(OperatorsCharacters.includes(char)) {
-                buffer += char
-                continue
-            } else {
-                if(Operators.includes(buffer)) {
-                    tokens.push([ buffer ]) // buffer passed as token type
-                } else {
-                    const index = i - buffer.length + 1
-                    errors.push(`invalid operator '${buffer}' at '${index}'`, index)
-                }
-
-                if(EndOfCharacters.includes(char)) {
-                    if(!SilentEndOfCharacters.includes(char))
-                        tokens.push([ Token.EOF ])
-                } else i--;
-            }
-
-            parsingOperator = false
-        } else if(OperatorsCharacters.includes(char)) {
-            parsingOperator = true
-            buffer += char
-            continue
-        } else if(Characters.includes(char)) {
-            parsingString = true
-            buffer += char
-            continue
-        } else if(Digits.includes(char)) {
-            parsingDigits = true
-            buffer += char
-            continue
         }
-
-        buffer = ""
     }
 
     return [ tokens, errors ]
+}
+
+export function printTokens(tokens, strictType) {
+    for(const token of tokens) {
+        const type = token[0]
+        const value = token[1]
+
+        let printingType = type
+
+        if(strictType) {
+            for(const tokenType in Token) {
+                if(Token[tokenType] === type) {
+                    printingType = tokenType
+                    break;
+                }
+            }
+        }
+
+        console.log('[', printingType, value ?? '', ']')
+    }
 }

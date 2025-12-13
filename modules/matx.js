@@ -1,13 +1,11 @@
-import {tokenize} from "./tokenizer.js";
+import {tokenize,printTokens} from "./tokenizer.js";
 
 export function translate(code) {
     const [tokens, errors] = tokenize(code);
 
     let str = ""
 
-    for(const token of tokens) {
-        console.log(token)
-    }
+    printTokens(tokens)
 
     console.log(str)
 
@@ -17,16 +15,7 @@ export function translate(code) {
 }
 
 translate(`
-mat4 a;
-mat4 b;
-mat4 c = a * b;
-fun erh(a, b) {
-    return a * b;
-}
 
-mat4 d = erh(c, a)
-
-return d[2]
 `)
 
 console.log("meow")
