@@ -163,8 +163,8 @@ class TokenizerTemplate {
         return this.#contains(this.#identifyCharacters, char)
     }
 
-    pushToken(i, buffer, tokens, errors) {
-        this.#tokenFunction(i, buffer, tokens, errors)
+    pushToken(i, buffer, pushToken, pushError) {
+        this.#tokenFunction(i, buffer, pushToken, pushError)
     }
 
     isCandidate(buffer) {
@@ -177,11 +177,11 @@ const Tokenizers = Object.freeze({
         "string",
         [ Characters, Digits ],
         [ Characters ],
-        function(i, buffer, tokens, errors) {
+        function(i, buffer, pushToken, pushError) {
             if(Operators.includes(buffer) || Types.includes(buffer))
-                tokens.push([ buffer ]) // buffer passed as token type
+                pushToken(buffer) // buffer passed as token type
             else
-                tokens.push([ Token.LITERAL, buffer ])
+                pushToken(Token.LITERAL, buffer)
         }
     ),
 
@@ -189,14 +189,13 @@ const Tokenizers = Object.freeze({
         "digits",
         [ Digits, Dot ],
         [ Digits ],
-        function(i, buffer, tokens, errors) {
+        function(i, buffer, pushToken, pushError) {
             const num = Number(buffer)
 
             if(!Number.isNaN(num) && buffer !== '') {
-                tokens.push([ Token.NUMBER, num ])
+                pushToken(Token.NUMBER, num)
             } else {
-                const index = i - buffer.length + 1
-                errors.push(`invalid number '${buffer}' at '${index}'`, index)
+                pushError(`invalid number '${buffer}'`)
             }
         }
     ),
@@ -205,12 +204,11 @@ const Tokenizers = Object.freeze({
         "operators",
         [ OperatorsCharacters ],
         [ OperatorsCharacters ],
-        function(i, buffer, tokens, errors) {
+        function(i, buffer, pushToken, pushError) {
             if(Operators.includes(buffer)) {
-                tokens.push([ buffer ]) // buffer passed as token type
+                pushToken(buffer) // buffer passed as token type
             } else {
-                const index = i - buffer.length + 1
-                errors.push(`invalid operator '${buffer}' at '${index}'`, index)
+                pushError(`invalid operator '${buffer}'`)
             }
         },
         function(buffer) {
@@ -224,8 +222,8 @@ const Tokenizers = Object.freeze({
             return char !== '\n'
         },
         [ "#" ],
-        function(i, buffer, tokens, errors) {
-            tokens.push([ Token.COMMENT, buffer.substring(1) ])
+        function(i, buffer, pushToken, pushError) {
+            pushToken(Token.COMMENT, buffer.substring(1))
         }
     )
 })
@@ -235,7 +233,7 @@ const IgnoredCharacters = Object.freeze([
 ])
 
 export function tokenize(code) {
-    code += ";"
+    code = code.replaceAll("\r\n", "\r").replaceAll("\r", "\n") + "\n"
 
     let errors = [ ]
     let tokens = [ ]
@@ -243,6 +241,26 @@ export function tokenize(code) {
     let currentTokenizer = null
 
     let buffer = ""
+
+    let column = 1, line = 1;
+
+    const pushError = function(msg) {
+        errors.push({
+            rawMsg: msg,
+            msg: msg + ` at column '${column}', line '${line}'`,
+            column: column,
+            line: line
+        })
+    }
+
+    const pushToken = function(type, value, nosub) {
+        tokens.push({
+            type: type,
+            value: value,
+            column: column - (nosub ? 0 : buffer.length),
+            line: line
+        })
+    }
 
     for (let i = 0; i < code.length; i++) {
         const char = code[i]
@@ -257,11 +275,11 @@ export function tokenize(code) {
             ) {
                 buffer += char
             } else {
-                Tokenizers[currentTokenizer].pushToken(i, buffer, tokens, errors)
+                Tokenizers[currentTokenizer].pushToken(i, buffer, pushToken, pushError)
 
-                if(EndOfCharacters.includes(char)) {
+                if(EndOfCharacters.includes(char) && char !== '\n') {
                     if(!SilentEndOfCharacters.includes(char))
-                        tokens.push([ Token.EOF ])
+                        pushToken(Token.EOF, null, true)
                 } else i--;
 
                 currentTokenizer = null
@@ -289,31 +307,17 @@ export function tokenize(code) {
                     }
                 }
 
-                if(!mustIgnore)
-                    errors.push(`unknown character '${char}' at '${i + 1}'`)
-            }
-        }
-    }
-
-    return [ tokens, errors ]
-}
-
-export function printTokens(tokens, strictType) {
-    for(const token of tokens) {
-        const type = token[0]
-        const value = token[1]
-
-        let printingType = type
-
-        if(strictType) {
-            for(const tokenType in Token) {
-                if(Token[tokenType] === type) {
-                    printingType = tokenType
-                    break;
+                if(!mustIgnore) {
+                    pushError(`unknown character '${char}'`)
+                } else if(char === '\n') {
+                    column = 0
+                    line++;
                 }
             }
         }
 
-        console.log('[', printingType, value ?? '', ']')
+        column++;
     }
+
+    return [ tokens, errors ]
 }
