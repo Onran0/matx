@@ -325,7 +325,7 @@ export function tokenize(code) {
                 }
 
                 if(!mustIgnore) {
-                    pushError(`unknown character '${char}'`)
+                    pushError(`unexpected character '${char}'`)
                 } else if(char === '\n') {
                     column = 0
                     line++;
