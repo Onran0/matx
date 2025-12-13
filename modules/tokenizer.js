@@ -121,26 +121,19 @@ const Types = Object.freeze([
 ])
 
 class TokenizerTemplate {
-    #name
     #allowedCharacters
     #identifyCharacters
     #tokenFunction
     #candidateFunction
 
     constructor(
-        name,
         allowedCharacters, identifyCharacters,
         tokenFunction, candidateFunction
     ) {
-        this.#name = name
         this.#allowedCharacters = allowedCharacters
         this.#identifyCharacters = identifyCharacters
         this.#tokenFunction = tokenFunction
         this.#candidateFunction = candidateFunction
-    }
-
-    getName() {
-        return this.#name
     }
 
     #contains(charactersArray, char) {
@@ -174,10 +167,9 @@ class TokenizerTemplate {
 
 const Tokenizers = Object.freeze({
     string: new TokenizerTemplate(
-        "string",
         [ Characters, Digits ],
         [ Characters ],
-        function(i, buffer, pushToken, pushError) {
+        function(i, buffer, pushToken) {
             if(Operators.includes(buffer) || Types.includes(buffer))
                 pushToken(buffer) // buffer passed as token type
             else
@@ -186,7 +178,6 @@ const Tokenizers = Object.freeze({
     ),
 
     digits: new TokenizerTemplate(
-        "digits",
         [ Digits, Dot ],
         [ Digits ],
         function(i, buffer, pushToken, pushError) {
@@ -201,7 +192,6 @@ const Tokenizers = Object.freeze({
     ),
 
     operators: new TokenizerTemplate(
-        "operators",
         [ OperatorsCharacters ],
         [ OperatorsCharacters ],
         function(i, buffer, pushToken, pushError) {
@@ -217,12 +207,11 @@ const Tokenizers = Object.freeze({
     ),
 
     comments: new TokenizerTemplate(
-        "comments",
         function(char) {
             return char !== '\n'
         },
         [ "#" ],
-        function(i, buffer, pushToken, pushError) {
+        function(i, buffer, pushToken) {
             pushToken(Token.COMMENT, buffer.substring(1))
         }
     )
