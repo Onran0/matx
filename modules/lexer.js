@@ -1,5 +1,5 @@
 export const Token = Object.freeze({
-    LITERAL: "literal",
+    NAME: "name",
     NUMBER: "number",
     COMMENT: "comment",
 
@@ -19,7 +19,23 @@ export const Token = Object.freeze({
     LSHIFT: "<<",
     RSHIFT: ">>",
 
+    ASSIGN_ADD: "+=",
+    ASSIGN_SUB: "-=",
+    ASSIGN_MOD: "%=",
+    ASSIGN_MUL: "*=",
+    ASSIGN_DIV: "/=",
+    ASSIGN_INT_DIV: "//=",
+    ASSIGN_POW: "**=",
+
+    ASSIGN_XOR: "^=",
+    ASSIGN_OR: "|=",
+    ASSIGN_AND: "&=",
+    ASSIGN_LSHIFT: "<<=",
+    ASSIGN_RSHIFT: ">>=",
+
+
     EQL: "==",
+    NEQL: "!=",
     GRTR: ">",
     LESS: "<",
     GRTR_OR_EQL: ">=",
@@ -45,7 +61,6 @@ export const Token = Object.freeze({
     RSQ_BRACKET: "]",
     COMMA: ",",
     SEMI: ";",
-    DOT: ".",
 
     LAMBDA: "=>",
     FUNCTION: "fun",
@@ -53,20 +68,35 @@ export const Token = Object.freeze({
     EOF: "eof",
     RETURN: "return",
 
+    TRUE: "true",
+    FALSE: "false",
+
     isOperator: function(token) {
-        return isOperator(token);
+        return isOperator(token)
+    },
+
+    isAssignOperator: function(token) {
+        return isAssignOperator(token)
+    },
+
+    convertAssignOperatorToRegular: function(token) {
+        return convertAssignOperatorToRegular(token)
     },
 
     isType: function(token) {
-        return isType(token);
+        return isType(token)
     },
 
     isNumber: function(token) {
         return token.type === "number"
     },
 
-    isLiteral: function(token) {
-        return token.type === "literal"
+    isName: function(token) {
+        return token.type === "name"
+    },
+
+    isBool: function(token) {
+        return token.type === Token.TRUE || token.type === Token.FALSE
     },
 
     isComment: function(token) {
@@ -76,10 +106,10 @@ export const Token = Object.freeze({
 
 const EndOfCharacters = " \t\n;"
 
-// quiet in the sense that they are not added to tokens like eof
+// quiet in the sense that they are not added to tokens like regular eof
 const SilentEndOfCharacters = " \t"
 
-const Characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+const Characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_."
 
 const Digits = "0123456789"
 const Dot = "."
@@ -102,7 +132,22 @@ const Operators = Object.freeze([
     Token.LSHIFT,
     Token.RSHIFT,
 
+    Token.ASSIGN_ADD,
+    Token.ASSIGN_SUB,
+    Token.ASSIGN_MOD,
+    Token.ASSIGN_MUL,
+    Token.ASSIGN_DIV,
+    Token.ASSIGN_INT_DIV,
+    Token.ASSIGN_POW,
+
+    Token.ASSIGN_XOR,
+    Token.ASSIGN_OR,
+    Token.ASSIGN_AND,
+    Token.ASSIGN_LSHIFT,
+    Token.ASSIGN_RSHIFT,
+
     Token.EQL,
+    Token.NEQL,
     Token.GRTR,
     Token.LESS,
     Token.GRTR_OR_EQL,
@@ -118,15 +163,53 @@ const Operators = Object.freeze([
     Token.RSQ_BRACKET,
 
     Token.COMMA,
-    Token.DOT,
 
     Token.FUNCTION,
     Token.LAMBDA,
 
-    Token.RETURN
+    Token.RETURN,
+
+    Token.TRUE,
+    Token.FALSE
 ])
 
-const OperatorsCharacters = ".,+-*/><=|&^~%()[]{}"
+const AssignOperators = Object.freeze([
+    Token.ASSIGN,
+
+    Token.ASSIGN_ADD,
+    Token.ASSIGN_SUB,
+    Token.ASSIGN_MOD,
+    Token.ASSIGN_MUL,
+    Token.ASSIGN_DIV,
+    Token.ASSIGN_INT_DIV,
+    Token.ASSIGN_POW,
+
+    Token.ASSIGN_XOR,
+    Token.ASSIGN_OR,
+    Token.ASSIGN_AND,
+    Token.ASSIGN_LSHIFT,
+    Token.ASSIGN_RSHIFT,
+])
+
+const AssignOperatorToRegular = Object.freeze({
+    [Token.ASSIGN]: "",
+
+    [Token.ASSIGN_ADD]: Token.ADD,
+    [Token.ASSIGN_SUB]: Token.SUB,
+    [Token.ASSIGN_MOD]: Token.MOD,
+    [Token.ASSIGN_MUL]: Token.MUL,
+    [Token.ASSIGN_DIV]: Token.DIV,
+    [Token.ASSIGN_INT_DIV]: Token.INT_DIV,
+    [Token.ASSIGN_POW]: Token.POW,
+
+    [Token.ASSIGN_XOR]: Token.XOR,
+    [Token.ASSIGN_OR]: Token.OR,
+    [Token.ASSIGN_AND]: Token.AND,
+    [Token.ASSIGN_LSHIFT]: Token.LSHIFT,
+    [Token.ASSIGN_RSHIFT]: Token.RSHIFT
+})
+
+const OperatorsCharacters = ",+-*/><!=|&^~%()[]{}"
 
 const Types = Object.freeze([
     Token.TYPE_INT,
@@ -141,11 +224,19 @@ const Types = Object.freeze([
 ])
 
 function isOperator(token) {
-    return Operators.includes(token)
+    return Operators.includes(token.type)
+}
+
+function isAssignOperator(token) {
+    return AssignOperators.includes(token.type)
+}
+
+function convertAssignOperatorToRegular(token) {
+    return AssignOperatorToRegular[token.type]
 }
 
 function isType(token) {
-    return Types.includes(token)
+    return Types.includes(token.type)
 }
 
 class TokenizerTemplate {
@@ -194,14 +285,14 @@ class TokenizerTemplate {
 }
 
 const Tokenizers = Object.freeze({
-    string: new TokenizerTemplate(
+    name: new TokenizerTemplate(
         [ Characters, Digits ],
         [ Characters ],
         function(i, buffer, pushToken) {
             if(Operators.includes(buffer) || Types.includes(buffer))
                 pushToken(buffer) // buffer passed as token type
             else
-                pushToken(Token.LITERAL, buffer)
+                pushToken(Token.NAME, buffer)
         }
     ),
 
