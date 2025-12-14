@@ -1,12 +1,13 @@
 import * as fs from 'fs';
 
-import {tokenize} from "./tokenizer.js";
+import {parse} from "./parser.js";
 
 export function translate(code) {
-    const [tokens, errors] = tokenize(code);
+    const [statements, errors] = parse(code);
 
-    for(const token of tokens) {
-        console.log(token)
+    for(const statement of statements) {
+        console.log(statement.statement.toString())
+        console.log()
     }
 
     for(const error of errors) {
@@ -23,5 +24,3 @@ try {
 }
 
 translate(data)
-
-console.log("meow")
