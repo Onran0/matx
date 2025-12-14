@@ -83,7 +83,13 @@ class ExpressionsParser {
         let leftNode
         const current = this.#currentToken()
 
-        if (current.type === Token.NUMBER) {
+        if (Token.canBeUnaryOperator(current)) {
+            const operatorToken = this.#consume()
+            const operandExpression = this.parseExpression(pushError, 12)
+
+            leftNode = new Expressions.UnaryExpression(operandExpression, operatorToken.type)
+        }
+        else if (current.type === Token.NUMBER) {
             this.#consume()
             leftNode = new Expressions.NumberExpression(current.value, Math.floor(current.value) === current.value)
         } else if (current.type === Token.TRUE || current.type === Token.FALSE) {

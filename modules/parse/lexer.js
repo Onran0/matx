@@ -42,6 +42,7 @@ export const Token = Object.freeze({
     LESS_OR_EQL: "<=",
     LOGIC_AND: "&&",
     LOGIC_OR: "||",
+    LOGIC_NOT: "!",
 
     TYPE_INT: "int",
     TYPE_FLOAT: "num",
@@ -85,6 +86,10 @@ export const Token = Object.freeze({
 
     isType: function(token) {
         return isType(token)
+    },
+
+    canBeUnaryOperator: function(token) {
+        return canBeUnaryOperator(token)
     },
 
     isNumber: function(token) {
@@ -154,6 +159,7 @@ const Operators = Object.freeze([
     Token.LESS_OR_EQL,
     Token.LOGIC_AND,
     Token.LOGIC_OR,
+    Token.LOGIC_NOT,
 
     Token.L_BRACKET,
     Token.R_BRACKET,
@@ -223,6 +229,13 @@ const Types = Object.freeze([
     Token.TYPE_QUAT,
 ])
 
+const PossibleUnaryOperators = Object.freeze([
+    Token.ADD,
+    Token.SUB,
+    Token.NOT,
+    Token.LOGIC_NOT
+])
+
 function isOperator(token) {
     return Operators.includes(token.type)
 }
@@ -237,6 +250,10 @@ function convertAssignOperatorToRegular(token) {
 
 function isType(token) {
     return Types.includes(token.type)
+}
+
+function canBeUnaryOperator(token) {
+    return PossibleUnaryOperators.includes(token.type)
 }
 
 class TokenizerTemplate {

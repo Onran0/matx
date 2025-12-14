@@ -29,6 +29,6 @@ test = 1;
 
 v = test(test[1][2], test[2], test[3])[2];
 
-test[22 + test(1, 2, 3)] = 3;
+test[!false + ~(-12)] = 3;
 
 return 2;

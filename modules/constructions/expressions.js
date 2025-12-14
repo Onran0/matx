@@ -80,6 +80,10 @@ export class BoolExpression extends Expression {
     get value() {
         return this.#value
     }
+
+    toString() {
+        return this.#value.toString()
+    }
 }
 
 export class ArrayExpression extends Expression {
@@ -153,5 +157,28 @@ export class IndexExpression extends Expression {
 
     toString() {
         return `${this.target.toString()}[${this.index.toString()}]`
+    }
+}
+
+export class UnaryExpression extends Expression {
+    #operandExpression
+    #operatorType
+
+    constructor(operandExpression, operatorType) {
+        super()
+        this.#operandExpression = operandExpression
+        this.#operatorType = operatorType
+    }
+
+    get operandExpression() {
+        return this.#operandExpression
+    }
+
+    get operatorType() {
+        return this.#operatorType
+    }
+
+    toString() {
+        return `${this.#operatorType}${this.#operandExpression.toString()}`
     }
 }
