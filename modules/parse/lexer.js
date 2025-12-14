@@ -19,6 +19,9 @@ export const Token = Object.freeze({
     LSHIFT: "<<",
     RSHIFT: ">>",
 
+    INCREMENT: "++",
+    DECREMENT: "--",
+
     ASSIGN_ADD: "+=",
     ASSIGN_SUB: "-=",
     ASSIGN_MOD: "%=",
@@ -32,7 +35,6 @@ export const Token = Object.freeze({
     ASSIGN_AND: "&=",
     ASSIGN_LSHIFT: "<<=",
     ASSIGN_RSHIFT: ">>=",
-
 
     EQL: "==",
     NEQL: "!=",
@@ -137,6 +139,9 @@ const Operators = Object.freeze([
     Token.LSHIFT,
     Token.RSHIFT,
 
+    Token.INCREMENT,
+    Token.DECREMENT,
+
     Token.ASSIGN_ADD,
     Token.ASSIGN_SUB,
     Token.ASSIGN_MOD,
@@ -233,7 +238,9 @@ const PossibleUnaryOperators = Object.freeze([
     Token.ADD,
     Token.SUB,
     Token.NOT,
-    Token.LOGIC_NOT
+    Token.LOGIC_NOT,
+    Token.INCREMENT,
+    Token.DECREMENT
 ])
 
 function isOperator(token) {

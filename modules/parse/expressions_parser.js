@@ -47,6 +47,11 @@ const PRECEDENCE = Object.freeze({
     [Token.L_BRACKET]: 11
 })
 
+const UNARY_PRIORITY = 12
+const INCDEC_PRIORITY = UNARY_PRIORITY + 1
+
+let POSTFIX_OPERATORS = [ Token.LSQ_BRACKET, Token.INCREMENT, Token.DECREMENT ]
+
 class ExpressionsParser {
     #tokens
     #currentTokenIndex
@@ -85,9 +90,12 @@ class ExpressionsParser {
 
         if (Token.canBeUnaryOperator(current)) {
             const operatorToken = this.#consume()
-            const operandExpression = this.parseExpression(pushError, 12)
+            const operandExpression = this.parseExpression(pushError,
+                current.type === Token.INCREMENT ||
+                current.type === Token.DECREMENT ? INCDEC_PRIORITY : UNARY_PRIORITY
+            )
 
-            leftNode = new Expressions.UnaryExpression(operandExpression, operatorToken.type)
+            leftNode = new Expressions.UnaryExpression(true, operandExpression, operatorToken.type)
         }
         else if (current.type === Token.NUMBER) {
             this.#consume()
@@ -148,12 +156,19 @@ class ExpressionsParser {
             return null
         }
 
-        while (this.#currentToken().type === Token.LSQ_BRACKET) {
-            this.#consume()
-            const indexExpr = this.parseExpression(pushError)
-            this.#consumeToken([Token.RSQ_BRACKET], pushError)
+        while (POSTFIX_OPERATORS.includes(this.#currentToken().type)) {
+            const token = this.#currentToken();
 
-            leftNode = new Expressions.IndexExpression(leftNode, indexExpr)
+            if (token.type === Token.LSQ_BRACKET) {
+                this.#consume();
+                const indexExpr = this.parseExpression(pushError, 0);
+                this.#consumeToken([Token.RSQ_BRACKET], pushError);
+
+                leftNode = new Expressions.IndexExpression(leftNode, indexExpr);
+            } else {
+                this.#consume();
+                leftNode = new Expressions.UnaryExpression(false, leftNode, token.type);
+            }
         }
 
         while (this.#getPrecedence(this.#currentToken()) >= minPrecedence) {

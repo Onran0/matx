@@ -161,11 +161,13 @@ export class IndexExpression extends Expression {
 }
 
 export class UnaryExpression extends Expression {
+    #isPrefix
     #operandExpression
     #operatorType
 
-    constructor(operandExpression, operatorType) {
+    constructor(isPrefix, operandExpression, operatorType) {
         super()
+        this.#isPrefix = isPrefix
         this.#operandExpression = operandExpression
         this.#operatorType = operatorType
     }
@@ -178,7 +180,15 @@ export class UnaryExpression extends Expression {
         return this.#operatorType
     }
 
+    get isPrefix() {
+        return this.#isPrefix
+    }
+
     toString() {
-        return `${this.#operatorType}${this.#operandExpression.toString()}`
+        if(this.#isPrefix) {
+            return `${this.#operatorType}${this.#operandExpression.toString()}`
+        } else {
+            return `${this.#operandExpression.toString()}${this.#operatorType}`
+        }
     }
 }
