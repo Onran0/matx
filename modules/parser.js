@@ -1,7 +1,6 @@
 import {tokenize,Token} from "./lexer.js";
 import * as statements from "./statements.js";
 import {parseExpression} from "./expressions_parser.js";
-import {Statement, VariableDeclaration} from "./statements.js";
 
 class ParserTemplate {
     isEnd(token) {}
