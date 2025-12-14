@@ -23,6 +23,10 @@ export class BinaryExpression extends Expression {
     get operation() {
         return this.#operation
     }
+
+    toString() {
+        return `${this.#leftExpression.toString()} ${this.#operation} ${this.#rightExpression.toString()}`
+    }
 }
 
 export class VariableExpression extends Expression {
@@ -35,6 +39,10 @@ export class VariableExpression extends Expression {
 
     get name() {
         return this.#name
+    }
+
+    toString() {
+        return String(this.#name);
     }
 }
 
@@ -55,6 +63,10 @@ export class NumberExpression extends Expression {
     get value() {
         return this.#value
     }
+
+    toString() {
+        return String(this.#value);
+    }
 }
 
 export class BoolExpression extends Expression {
@@ -71,15 +83,30 @@ export class BoolExpression extends Expression {
 }
 
 export class ArrayExpression extends Expression {
-    #elements
+    #elementsExpressions
 
-    constructor(elements) {
+    constructor(elementsExpressions) {
         super();
-        this.#elements = elements
+        this.#elementsExpressions = elementsExpressions
     }
 
     get elements() {
-        return this.#elements
+        return this.#elementsExpressions
+    }
+
+    toString() {
+        let res = ""
+
+        for(const argument of this.#elementsExpressions) {
+            res += argument.toString()
+            res += ", "
+        }
+
+        if(this.#elementsExpressions.length > 0) {
+            res = res.substring(0, res.length - 2)
+        }
+
+        return `[ ${res} ]`
     }
 }
 
@@ -99,5 +126,20 @@ export class FunctionExpression extends Expression {
 
     get argumentsExpressions() {
         return this.#argumentsExpressions
+    }
+
+    toString() {
+        let res = ""
+
+        for(const argument of this.#argumentsExpressions) {
+            res += argument.toString()
+            res += ", "
+        }
+
+        if(this.#argumentsExpressions.length > 0) {
+            res = res.substring(0, res.length - 2)
+        }
+
+        return `${this.#name}(${res})`
     }
 }
