@@ -1,5 +1,5 @@
 import {tokenize,Token} from "./lexer.js";
-import * as statements from "./statements.js";
+import * as statements from "../constructions/statements.js";
 import {parseExpression} from "./expressions_parser.js";
 
 class ParserTemplate {
@@ -60,6 +60,7 @@ class VariableDeclarationParser extends ParserTemplate {
 
 class FunctionDeclarationParser extends ParserTemplate {
     #lambda
+    #openingBracketsCount
 
     constructor() {
         super();
@@ -69,9 +70,19 @@ class FunctionDeclarationParser extends ParserTemplate {
     isEnd(token) {
         if(token.type === Token.LAMBDA) {
             this.#lambda = true
+        } else {
+            if(this.#lambda) {
+                return [ token.type === Token.EOF]
+            } else {
+                if(token.type === Token.LF_BRACKET) {
+                    this.#openingBracketsCount++
+                } else if(token.type === Token.RF_BRACKET) {
+                    return [ --this.#openingBracketsCount === 0 ]
+                }
+            }
         }
 
-        return [ this.#lambda ? token.type === Token.EOF : token.type === Token.RF_BRACKET ]
+        return [ false ]
     }
 
     pushStatement(buffer, pushStatement, pushError) {
@@ -177,6 +188,7 @@ class FunctionDeclarationParser extends ParserTemplate {
 
     reset() {
         this.#lambda = false
+        this.#openingBracketsCount = 0
     }
 }
 
@@ -205,8 +217,16 @@ class ReturnParser extends ParserTemplate {
 }
 
 class BlockParser extends ParserTemplate {
+    #openingBracketsCount
+
     isEnd(token) {
-        return [ token.type === Token.RF_BRACKET ]
+        if(token.type === Token.LF_BRACKET) {
+            this.#openingBracketsCount++
+        } else if(token.type === Token.RF_BRACKET) {
+            return [ this.#openingBracketsCount-- === 0 ]
+        }
+
+        return [ false ]
     }
 
     pushStatement(buffer, pushStatement, pushError) {
@@ -234,6 +254,10 @@ class BlockParser extends ParserTemplate {
     canStartFrom(token) {
         return token.type === Token.LF_BRACKET
     }
+
+    reset() {
+        this.#openingBracketsCount = 0
+    }
 }
 
 class VariableAssignParser extends ParserTemplate {
@@ -243,14 +267,59 @@ class VariableAssignParser extends ParserTemplate {
 
     pushStatement(buffer, pushStatement, pushError) {
         const varName = buffer[0]
-        const operation = buffer[1]
+        let operation
 
-        if(!Token.isAssignOperator(operation)) {
-            pushError(operation, `'${operation.type}' is not assign operator`)
+        let indexExpression
+        let operatorIndex
+
+        if(buffer[1].type === Token.LSQ_BRACKET) {
+            let indexExpressionTokens
+            let openingBracketsCount = 0
+
+            if(buffer[2] == null) {
+                pushError(buffer[1], `unexpected end`)
+                return
+            } else if(buffer[2].type === Token.RSQ_BRACKET) {
+                pushError(buffer[1], `index expression cant be empty`)
+                return
+            }
+
+            buffer.every((token, index) => {
+                if(index > 1) {
+                    if(token.type === Token.LSQ_BRACKET) {
+                        openingBracketsCount++
+                    } else if(token.type === Token.RSQ_BRACKET) {
+                        if(openingBracketsCount-- === 0) {
+                            indexExpressionTokens = buffer.slice(2, index)
+                            operatorIndex = index + 1
+                            return false
+                        }
+                    }
+                }
+
+                return true
+            })
+
+            if(indexExpressionTokens == null) {
+                pushError(buffer[1], `expected ']' for close index expression`)
+                return
+            }
+
+            console.log(indexExpressionTokens)
+
+            indexExpression = parseExpression(indexExpressionTokens, pushError)
+        } else operatorIndex = 1
+
+        if(buffer[operatorIndex] == null) {
+            console.log(operatorIndex)
+            pushError(buffer[operatorIndex - 1], `operator expected`)
             return
-        }
+        } else if(!Token.isAssignOperator(buffer[operatorIndex])) {
+            pushError(buffer[operatorIndex], `'${buffer[operatorIndex].type}' is not assign operator`)
+            return
+        } else operation = buffer[operatorIndex]
 
-        const expressionTokens = buffer.slice(2, buffer.length)
+        const expressionTokens = buffer.slice(operatorIndex + 1, buffer.length)
 
         if(expressionTokens.length === 0) {
             pushError(buffer[0], "expression expected")
@@ -262,7 +331,8 @@ class VariableAssignParser extends ParserTemplate {
         pushStatement(
             new statements.VariableAssign(
                 buffer[0], buffer[buffer.length - 1],
-                varName.value, expression, Token.convertAssignOperatorToRegular(operation)
+                varName.value, indexExpression, expression,
+                Token.convertAssignOperatorToRegular(operation)
             )
         )
     }

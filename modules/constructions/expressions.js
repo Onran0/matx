@@ -6,7 +6,7 @@ export class BinaryExpression extends Expression {
     #operation
 
     constructor(leftExpression, rightExpression, operation) {
-        super();
+        super()
         this.#leftExpression = leftExpression
         this.#rightExpression = rightExpression
         this.#operation = operation
@@ -33,7 +33,7 @@ export class VariableExpression extends Expression {
     #name
 
     constructor(name) {
-        super();
+        super()
         this.#name = name
     }
 
@@ -51,7 +51,7 @@ export class NumberExpression extends Expression {
     #typeInt
 
     constructor(value, typeInt) {
-        super();
+        super()
         this.#value = value
         this.#typeInt = typeInt
     }
@@ -73,7 +73,7 @@ export class BoolExpression extends Expression {
     #value
 
     constructor(value) {
-        super();
+        super()
         this.#value = value
     }
 
@@ -86,7 +86,7 @@ export class ArrayExpression extends Expression {
     #elementsExpressions
 
     constructor(elementsExpressions) {
-        super();
+        super()
         this.#elementsExpressions = elementsExpressions
     }
 
@@ -115,7 +115,7 @@ export class FunctionExpression extends Expression {
     #argumentsExpressions
 
     constructor(name, argumentsExpressions) {
-        super();
+        super()
         this.#name = name
         this.#argumentsExpressions = argumentsExpressions
     }
@@ -141,5 +141,17 @@ export class FunctionExpression extends Expression {
         }
 
         return `${this.#name}(${res})`
+    }
+}
+
+export class IndexExpression extends Expression {
+    constructor(target, index) {
+        super()
+        this.target = target
+        this.index = index
+    }
+
+    toString() {
+        return `${this.target.toString()}[${this.index.toString()}]`
     }
 }

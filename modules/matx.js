@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import {parse} from "./parser.js";
+import {parse} from "./parse/parser.js";
 
 export function translate(code) {
     const [statements, errors] = parse(code);

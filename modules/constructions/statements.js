@@ -141,12 +141,14 @@ export class Block extends Statement {
 
 export class VariableAssign extends Statement {
     #name
+    #indexExpression
     #expression
     #operation
 
-    constructor(startToken, endToken, name, expression, operation) {
+    constructor(startToken, endToken, name, indexExpression, expression, operation) {
         super(startToken, endToken)
         this.#name = name
+        this.#indexExpression = indexExpression
         this.#expression = expression
         this.#operation = operation
     }
@@ -159,11 +161,15 @@ export class VariableAssign extends Statement {
         return this.#expression
     }
 
+    get indexExpression() {
+        return this.#indexExpression
+    }
+
     get operation() {
         return this.#operation
     }
 
     toString() {
-        return `${this.#name} ${this.#operation}= ${this.#expression};`
+        return `${this.#name}${this.#indexExpression != null ? `[${this.#indexExpression.toString()}]` : ''} ${this.#operation}= ${this.#expression};`
     }
 }

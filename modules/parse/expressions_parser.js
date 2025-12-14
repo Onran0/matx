@@ -1,4 +1,4 @@
-import * as Expressions from "./expressions.js"
+import * as Expressions from "../constructions/expressions.js"
 import {Token} from "./lexer.js"
 
 const PRECEDENCE = Object.freeze({
@@ -140,6 +140,14 @@ class ExpressionsParser {
                 pushError(current, `unexpected token when starting expression`)
             }
             return null
+        }
+
+        while (this.#currentToken().type === Token.LSQ_BRACKET) {
+            this.#consume()
+            const indexExpr = this.parseExpression(pushError)
+            this.#consumeToken([Token.RSQ_BRACKET], pushError)
+
+            leftNode = new Expressions.IndexExpression(leftNode, indexExpr)
         }
 
         while (this.#getPrecedence(this.#currentToken()) >= minPrecedence) {
