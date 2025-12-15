@@ -18,30 +18,100 @@
 
  ***/
 
+import * as expressions from "../constructions/expressions.js"
 import {Token} from "../parse/lexer.js"
 
-class ExpressionTypeEvaluator {
+class ExpressionAnalyzer {
     #expressionType
 
     constructor(expressionType) {
         this.#expressionType = expressionType
     }
 
-    eval(expression, symbolsTable, pushError) {}
+    analyze(expression, context, pushError) {}
 
     reset() {}
 
-    canEval(expression) {
+    canAnalyze(expression) {
         return expression instanceof this.#expressionType
     }
 }
 
+class BinaryExpressionAnalyzer extends ExpressionAnalyzer {
+    constructor() {
+        super(expressions.BinaryExpression)
+    }
 
+    analyze(expression, context, pushError) {
 
-const TypeEvaluators = Object.freeze({
+    }
+}
 
-})
+class VariableExpressionAnalyzer extends ExpressionAnalyzer {
+    constructor() {
+        super(expressions.VariableExpression)
+    }
 
-export function analyze(symbolsTable, expression, pushError) {
+    analyze(expression, context, pushError) {
 
+    }
+}
+
+class NewObjectExpressionAnalyzer extends ExpressionAnalyzer {
+    constructor() {
+        super(expressions.NewObjectExpression)
+    }
+
+    analyze(expression, context, pushError) {
+
+    }
+}
+
+class FunctionExpressionAnalyzer extends ExpressionAnalyzer {
+    constructor() {
+        super(expressions.FunctionExpression)
+    }
+
+    analyze(expression, context, pushError) {
+
+    }
+}
+
+class IndexExpressionAnalyzer extends ExpressionAnalyzer {
+    constructor() {
+        super(expressions.IndexExpression)
+    }
+
+    analyze(expression, context, pushError) {
+
+    }
+}
+
+class UnaryExpressionAnalyzer extends ExpressionAnalyzer {
+    constructor() {
+        super(expressions.UnaryExpression)
+    }
+
+    analyze(expression, context, pushError) {
+
+    }
+}
+
+function getAnalyzers() {
+    return Object.freeze({
+        "bin_analyzer": new BinaryExpressionAnalyzer(),
+        "var_analyzer": new VariableExpressionAnalyzer(),
+        "new_object_analyzer": new NewObjectExpressionAnalyzer(),
+        "function_analyzer": new FunctionExpressionAnalyzer(),
+        "index_analyzer": new IndexExpressionAnalyzer(),
+        "unary_analyzer": new UnaryExpressionAnalyzer()
+    })
+}
+
+export function analyzeExpression(context, expression, pushError) {
+    const analyzer = getAnalyzers().find(x => x.canAnalyze(expression))
+
+    if(analyzer != null) {
+        analyzer.analyze(expression, context, pushError)
+    } else pushError("can't analyze expression of this type")
 }
