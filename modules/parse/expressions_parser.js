@@ -50,7 +50,7 @@ const PRECEDENCE = Object.freeze({
 const UNARY_PRIORITY = 12
 const INCDEC_PRIORITY = UNARY_PRIORITY + 1
 
-let POSTFIX_OPERATORS = [ Token.LSQ_BRACKET, Token.INCREMENT, Token.DECREMENT ]
+let POSTFIX_OPERATORS = [ Token.INCREMENT, Token.DECREMENT ]
 
 class ExpressionsParser {
     #tokens
@@ -84,6 +84,21 @@ class ExpressionsParser {
         return PRECEDENCE[token.type] || 0
     }
 
+    #parseFunctionArgs(pushError) {
+        const args = []
+        while (this.#currentToken().type !== Token.R_BRACKET && this.#currentToken().type !== Token.EOF) {
+            const argExpr = this.parseExpression(pushError)
+            args.push(argExpr)
+            if (this.#currentToken().type === Token.COMMA) {
+                this.#consume()
+            } else {
+                break
+            }
+        }
+        this.#consumeToken([Token.R_BRACKET], pushError)
+        return args
+    }
+
     parseExpression(pushError, minPrecedence = 0) {
         let leftNode
         const current = this.#currentToken()
@@ -103,48 +118,21 @@ class ExpressionsParser {
         } else if (current.type === Token.TRUE || current.type === Token.FALSE) {
             this.#consume()
             leftNode = new Expressions.BoolExpression(current.type === Token.TRUE)
+        } else if (Token.isType(current)) {
+            const typeToken = this.#consume()
+            this.#consumeToken([Token.L_BRACKET], pushError)
+
+            leftNode = new Expressions.NewObjectExpression(typeToken.type, this.#parseFunctionArgs(pushError))
         } else if (current.type === Token.NAME) {
             const nameToken = this.#consume()
 
             if (this.#currentToken().type === Token.L_BRACKET) {
                 this.#consume()
-                const args = []
 
-                while (this.#currentToken().type !== Token.R_BRACKET && this.#currentToken().type !== Token.EOF) {
-                    const argExpr = this.parseExpression(pushError)
-                    args.push(argExpr)
-
-                    if (this.#currentToken().type === Token.COMMA) {
-                        this.#consume()
-                    } else {
-                        break
-                    }
-                }
-
-                this.#consumeToken([Token.R_BRACKET], pushError)
-                leftNode = new Expressions.FunctionExpression(nameToken.value, args)
-
+                leftNode = new Expressions.FunctionExpression(nameToken.value, this.#parseFunctionArgs(pushError))
             } else {
                 leftNode = new Expressions.VariableExpression(nameToken.value)
             }
-        } else if (current.type === Token.LSQ_BRACKET) {
-            this.#consume()
-            const elements = []
-
-            while (this.#currentToken().type !== Token.RSQ_BRACKET && this.#currentToken().type !== Token.EOF) {
-                const elementExpr = this.parseExpression(pushError)
-                elements.push(elementExpr)
-
-                if (this.#currentToken().type === Token.COMMA) {
-                    this.#consume()
-                } else {
-                    break
-                }
-            }
-
-            this.#consumeToken([Token.RSQ_BRACKET], pushError)
-            leftNode = new Expressions.ArrayExpression(elements)
-
         } else if (current.type === Token.L_BRACKET) {
             this.#consume()
             leftNode = this.parseExpression(pushError, 0)
@@ -156,14 +144,19 @@ class ExpressionsParser {
             return null
         }
 
-        while (POSTFIX_OPERATORS.includes(this.#currentToken().type)) {
+        while (
+            POSTFIX_OPERATORS.includes(this.#currentToken().type) ||
+            (   this.#currentToken().type === Token.LSQ_BRACKET &&
+                this.#getPrecedence(this.#currentToken()) >= minPrecedence
+            )
+        ) {
+
             const token = this.#currentToken();
 
             if (token.type === Token.LSQ_BRACKET) {
                 this.#consume();
                 const indexExpr = this.parseExpression(pushError, 0);
                 this.#consumeToken([Token.RSQ_BRACKET], pushError);
-
                 leftNode = new Expressions.IndexExpression(leftNode, indexExpr);
             } else {
                 this.#consume();

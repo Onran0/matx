@@ -47,7 +47,7 @@ class VariableDeclarationParser extends ParserTemplate {
                 return
             }
 
-            expression = parseExpression(expressionTokens)
+            expression = parseExpression(expressionTokens, pushError)
         }
 
         pushStatement(new statements.VariableDeclaration(buffer[0], buffer[buffer.length - 1], varType.type, varName.value, expression))
@@ -326,7 +326,7 @@ class VariableAssignParser extends ParserTemplate {
             return
         }
 
-        const expression = parseExpression(expressionTokens)
+        const expression = parseExpression(expressionTokens, pushError)
 
         pushStatement(
             new statements.VariableAssign(

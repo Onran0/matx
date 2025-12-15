@@ -86,16 +86,22 @@ export class BoolExpression extends Expression {
     }
 }
 
-export class ArrayExpression extends Expression {
+export class NewObjectExpression extends Expression {
+    #type
     #elementsExpressions
 
-    constructor(elementsExpressions) {
+    constructor(type, elementsExpressions) {
         super()
+        this.#type = type
         this.#elementsExpressions = elementsExpressions
     }
 
     get elements() {
         return this.#elementsExpressions
+    }
+
+    get type() {
+        return this.#type
     }
 
     toString() {
@@ -110,7 +116,7 @@ export class ArrayExpression extends Expression {
             res = res.substring(0, res.length - 2)
         }
 
-        return `[ ${res} ]`
+        return `${this.#type}(${res})`
     }
 }
 
