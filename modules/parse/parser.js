@@ -118,8 +118,9 @@ class FunctionDeclarationParser extends ParserTemplate {
             return
         }
 
-        let argumentsNames = [ ]
-        let commaToken, codeStartIndex, error = false
+        let args = [ ]
+        let commaToken, colonToken, codeStartIndex, error = false
+        let argumentName
 
         buffer.every((token, index) => {
             if(index >= 3) {
@@ -128,25 +129,67 @@ class FunctionDeclarationParser extends ParserTemplate {
                     return false
                 }
 
-                if(token.type === Token.COMMA) {
+                if(Token.isType(token)) {
+                    if(argumentName == null) {
+                        pushError(token, "argument name expected")
+                        error = true
+                        return false
+                    } else if(colonToken == null) {
+                        pushError(token, "colon expected")
+                        error = true
+                        return false
+                    } else {
+                        args.push(
+                            {
+                                name: argumentName,
+                                type: token.type
+                            }
+                        )
+
+                        argumentName = null
+                        commaToken = null
+                        colonToken = null
+                    }
+                } else if(token.type === Token.COLON) {
+                    if(argumentName == null) {
+                        pushError(token, "argument name expected")
+                        error = true
+                        return false
+                    } else if(colonToken != null) {
+                        pushError(token, "type expected")
+                        error = true
+                        return false
+                    } else colonToken = token
+                } else if(token.type === Token.COMMA) {
                     if(commaToken != null) {
                         pushError(token, "argument name expected")
+                        error = true
+                        return false
+                    } else if(argumentName != null) {
+                        pushError(token, "colon expected")
+                        error = true
+                        return false
+                    } else if(colonToken != null) {
+                        pushError(token, "type expected")
                         error = true
                         return false
                     } else {
                         commaToken = token
                     }
-                }
-
-                if(token.type === Token.NAME) {
-                    if(commaToken == null && argumentsNames.length > 0) {
+                } else if(token.type === Token.NAME) {
+                    if(commaToken == null && args.length > 0) {
                         pushError(token, "comma expected")
                         error = true
                         return false
-                    } else {
-                        commaToken = null
-                        argumentsNames.push(token.value)
-                    }
+                    } else if(argumentName != null) {
+                        pushError(token, "colon expected")
+                        error = true
+                        return false
+                    } else if(colonToken != null) {
+                        pushError(token, "type expected")
+                        error = true
+                        return false
+                    } else argumentName = token.value
                 }
             }
 
@@ -167,7 +210,7 @@ class FunctionDeclarationParser extends ParserTemplate {
                             buffer[0],
                             buffer[buffer.length - 1],
                             funName.value,
-                            argumentsNames,
+                            args,
                             true,
                             [
                                 new statements.Return(
@@ -193,7 +236,7 @@ class FunctionDeclarationParser extends ParserTemplate {
                         buffer[0],
                         buffer[buffer.length - 1],
                         funName.value,
-                        argumentsNames,
+                        args,
                         false,
                         bodyStatements.map(statement => statement.statement)
                     ))

@@ -17,6 +17,7 @@
  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  ***/
+import {parseExpression} from "../parse/expressions_parser.js";
 
 export class Statement {
     #startToken
@@ -88,20 +89,20 @@ export class VariableDeclaration extends Statement {
 
 export class FunctionDeclaration extends Statement {
     #name
-    #argumentsNames
+    #args
     #isLambda
     #statements
 
-    constructor(startToken, endToken, name, argumentsNames, isLambda, statements) {
+    constructor(startToken, endToken, name, args, isLambda, statements) {
         super(startToken, endToken)
         this.#name = name
-        this.#argumentsNames = argumentsNames
+        this.#args = args
         this.#isLambda = isLambda
         this.#statements = statements
     }
 
-    get argumentsNames() {
-        return this.#argumentsNames
+    get args() {
+        return this.#args
     }
 
     get name() {
@@ -116,11 +117,21 @@ export class FunctionDeclaration extends Statement {
         return this.#isLambda
     }
 
+    argsToString() {
+        let strArgs = [ ]
+
+        for(const arg of this.#args) {
+            strArgs.push(`${arg.name}: ${arg.type}`)
+        }
+
+        return strArgs.join(", ")
+    }
+
     toString() {
         if(this.#isLambda) {
-            return `fun ${this.#name}(${this.#argumentsNames.join(', ')}) => ${this.#statements[0].expression.toString()};`
+            return `fun ${this.#name}(${this.argsToString()}) => ${this.#statements[0].expression.toString()};`
         } else {
-            return `fun ${this.#name}(${this.#argumentsNames.join(', ')}) {\n\t${this.#statements.join('\n\t')}\n}`
+            return `fun ${this.#name}(${this.argsToString()}) {\n\t${this.#statements.join('\n\t')}\n}`
         }
     }
 }

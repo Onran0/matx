@@ -84,6 +84,7 @@ export const Token = Object.freeze({
     RSQ_BRACKET: "]",
     COMMA: ",",
     SEMI: ";",
+    COLON: ":",
 
     LAMBDA: "=>",
     FUNCTION: "fun",
@@ -194,6 +195,7 @@ const Operators = Object.freeze([
     Token.RSQ_BRACKET,
 
     Token.COMMA,
+    Token.COLON,
 
     Token.FUNCTION,
     Token.LAMBDA,
@@ -264,23 +266,23 @@ const PossibleUnaryOperators = Object.freeze([
 ])
 
 function isOperator(token) {
-    return Operators.includes(token.type)
+    return Operators.includes(token?.type ?? token)
 }
 
 function isAssignOperator(token) {
-    return AssignOperators.includes(token.type)
+    return AssignOperators.includes(token?.type ?? token)
 }
 
 function convertAssignOperatorToRegular(token) {
-    return AssignOperatorToRegular[token.type]
+    return AssignOperatorToRegular[token?.type ?? token]
 }
 
 function isType(token) {
-    return Types.includes(token.type)
+    return Types.includes(token?.type ?? token)
 }
 
 function canBeUnaryOperator(token) {
-    return PossibleUnaryOperators.includes(token.type)
+    return PossibleUnaryOperators.includes(token?.type ?? token)
 }
 
 class TokenizerTemplate {
