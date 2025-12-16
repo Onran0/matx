@@ -232,8 +232,18 @@ const Analyzers = Object.freeze({
     "unary_analyzer": new UnaryExpressionAnalyzer()
 })
 
-export function analyzeExpression(context, expression, pushError) {
+export function analyzeExpression(context, expression, pushError, statement) {
     const analyzer = Analyzers.find(x => x.canAnalyze(expression))
+
+    // TODO: normal pushError for expressions
+
+    if(statement != null) {
+        const oldPushError = pushError
+
+        pushError = function(expression, msg) {
+            oldPushError(statement, msg)
+        }
+    }
 
     if(analyzer != null) {
         return analyzer.analyze(expression, context, pushError)
