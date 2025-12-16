@@ -21,6 +21,7 @@
 import * as fs from 'fs';
 
 import {parse} from "./parse/parser.js";
+import {analyze} from "./semantic/analyzer.js";
 
 export function translate(code) {
     const [statements, errors] = parse(code);
@@ -28,6 +29,14 @@ export function translate(code) {
     for(const statement of statements) {
         console.log(statement.statement.toString())
         console.log()
+    }
+
+    const [ context, semanticErrors ] = analyze(statements)
+
+    errors.push(semanticErrors)
+
+    if(errors.length === 0) {
+        console.log(context)
     }
 
     for(const error of errors) {
