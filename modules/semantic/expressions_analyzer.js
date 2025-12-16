@@ -29,7 +29,7 @@ class ExpressionAnalyzer {
 
     constructor(expressionType, resultProvider) {
         this.#expressionType = expressionType
-        this.resultProvider = resultProvider
+        this.#resultProvider = resultProvider
     }
 
     // must return type of output expression result, or undefined/null if expression have error
@@ -77,7 +77,7 @@ class VariableExpressionAnalyzer extends ExpressionAnalyzer {
     }
 
     analyze(expression, context, pushError) {
-        const type = getEntityProperty(context, "var", expression.name, "type")
+        const type = getEntityProperty(context, "vars", expression.name, "type")
 
         if(type == null) {
             pushError(expression, `variable '${expression.name}' is not defined`)
@@ -110,7 +110,13 @@ class NewObjectExpressionAnalyzer extends ExpressionAnalyzer {
                     let match = true
 
                     x.every((cType, index) => {
-                        if(cType !== constructorTypes[index]) {
+                        if(
+                            cType !== constructorTypes[index] &&
+                            (
+                                cType === Token.TYPE_INT && constructorTypes[index] === Token.TYPE_FLOAT ||
+                                cType === Token.TYPE_FLOAT && constructorTypes[index] === Token.TYPE_INT
+                            )
+                        ) {
                             match = false
                             return false
                         }
@@ -134,7 +140,7 @@ class FunctionExpressionAnalyzer extends ExpressionAnalyzer {
     }
 
     analyze(expression, context, pushError) {
-        const type = getEntityProperty(context, "function", expression.name, "type")
+        const type = getEntityProperty(context, "functions", expression.name, "type")
 
         if(type == null) {
             pushError(expression, `function '${expression.name}' is not defined`)
@@ -152,9 +158,15 @@ class FunctionExpressionAnalyzer extends ExpressionAnalyzer {
 
             let match = true
 
-            getEntityProperty(context, "function", expression.name, "argsTypes").every(
+            getEntityProperty(context, "functions", expression.name, "argsTypes").every(
                 (argType, index) => {
-                    if(argType !== types[index]) {
+                    if(
+                        argType !== types[index] &&
+                        (
+                            argType === Token.TYPE_INT && types[index] === Token.TYPE_FLOAT ||
+                            argType === Token.TYPE_FLOAT && types[index] === Token.TYPE_INT
+                        )
+                    ) {
                         match = false
                         return false
                     }
@@ -233,7 +245,7 @@ const Analyzers = Object.freeze({
 })
 
 export function analyzeExpression(context, expression, pushError, statement) {
-    const analyzer = Analyzers.find(x => x.canAnalyze(expression))
+    const analyzer = Object.values(Analyzers).find(x => x.canAnalyze(expression))
 
     // TODO: normal pushError for expressions
 
