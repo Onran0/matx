@@ -129,9 +129,9 @@ export class FunctionDeclaration extends Statement {
 
     toString() {
         if(this.#isLambda) {
-            return `fun ${this.#name}(${this.argsToString()}) => ${this.#statements[0].expression.toString()};`
+            return `fun ${this.#name}(${this.argsToString()}) => ${this.#statements[0].statement.expression.toString()};`
         } else {
-            return `fun ${this.#name}(${this.argsToString()}) {\n\t${this.#statements.join('\n\t')}\n}`
+            return `fun ${this.#name}(${this.argsToString()}) {\n\t${(this.#statements.map(x => x.statement)).join('\n\t')}\n}`
         }
     }
 }
@@ -166,7 +166,7 @@ export class Block extends Statement {
     }
 
     toString() {
-        return `{\n\t${this.#statements.join('\n\t')}\n}`
+        return `{\n\t${(this.#statements.map(x => x.statement)).join('\n\t')}\n}`
     }
 }
 

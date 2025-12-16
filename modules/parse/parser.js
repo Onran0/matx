@@ -238,7 +238,7 @@ class FunctionDeclarationParser extends ParserTemplate {
                         funName.value,
                         args,
                         false,
-                        bodyStatements.map(statement => statement.statement)
+                        bodyStatements
                     ))
                 }
             }
@@ -306,9 +306,7 @@ class BlockParser extends ParserTemplate {
             pushStatement(
                 new statements.Block(
                     buffer[0], buffer[buffer.length - 1],
-                    parseTokens(statementsTokens, null, pushError)[0].map(
-                        statement => statement.statement
-                    )
+                    parseTokens(statementsTokens, null, pushError)[0]
                 )
             )
         }
