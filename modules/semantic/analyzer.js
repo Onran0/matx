@@ -21,7 +21,7 @@
 import * as expressions from "../constructions/expressions.js"
 import * as statements from "../constructions/statements.js";
 import {analyzeExpression} from "./expressions_analyzer.js";
-import {OutputTypeTable} from "./output_type_table.js";
+import {BinaryTable} from "./types_meta.js";
 
 class AnalyzerTemplate {
     #statementType
@@ -99,19 +99,19 @@ function getAnalyzers() {
     })
 }
 
-function getEntityType(context, entityType, name) {
-    const type = context[entityType + 's'][name]?.type
+export function getEntityProperty(context, entityType, name, property) {
+    const val = context[entityType + 's'][name]?.[property]
 
-    if(type != null)
-        return type
+    if(val != null)
+        return val
     else if(context.parentContext != null)
-        return getEntityType(context.parentContext, entityType, name)
+        return getEntityProperty(context.parentContext, entityType, name, property)
     else
         return undefined
 }
 
-function setEntityType(context, entityType, name, type) {
-    (context[entityType + 's'][name] ??= { }).type = type
+export function setEntityProperty(context, entityType, name, property, value) {
+    (context[entityType + 's'][name] ??= { })[property] = value
 }
 
 export function analyze(ast, parentContext, pushError) {

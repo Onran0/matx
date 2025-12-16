@@ -20,7 +20,7 @@
 
 import {Token} from "../parse/lexer.js"
 
-export const OutputTypeTable = Object.freeze({
+export const BinaryTable = Object.freeze({
     [Token.TYPE_INT] : {
         [Token.ADD] : {
             [Token.TYPE_INT]: Token.TYPE_INT,
@@ -99,13 +99,7 @@ export const OutputTypeTable = Object.freeze({
 
         [Token.RSHIFT] : {
             [Token.TYPE_INT]: Token.TYPE_INT
-        },
-
-        UNARY: [
-            Token.ADD,
-            Token.SUB,
-            Token.NOT
-        ]
+        }
     },
 
     [Token.TYPE_FLOAT]: {
@@ -166,12 +160,7 @@ export const OutputTypeTable = Object.freeze({
         [Token.POW] : {
             [Token.TYPE_INT]: Token.TYPE_FLOAT,
             [Token.TYPE_FLOAT]: Token.TYPE_FLOAT
-        },
-
-        UNARY: [
-            Token.ADD,
-            Token.SUB
-        ]
+        }
     },
 
     [Token.TYPE_BOOL]: {
@@ -205,11 +194,7 @@ export const OutputTypeTable = Object.freeze({
 
         [Token.LOGIC_OR]: {
             [Token.TYPE_BOOL]: Token.TYPE_BOOL
-        },
-
-        UNARY: [
-            Token.LOGIC_NOT
-        ]
+        }
     },
 
     [Token.TYPE_VEC2]: {
@@ -251,12 +236,7 @@ export const OutputTypeTable = Object.freeze({
             [Token.TYPE_VEC2]: Token.TYPE_VEC2,
             [Token.TYPE_VEC3]: Token.TYPE_VEC3,
             [Token.TYPE_VEC4]: Token.TYPE_VEC4
-        },
-
-        UNARY: [
-            Token.ADD,
-            Token.SUB
-        ]
+        }
     },
 
     [Token.TYPE_VEC3]: {
@@ -298,12 +278,7 @@ export const OutputTypeTable = Object.freeze({
             [Token.TYPE_VEC2]: Token.TYPE_VEC3,
             [Token.TYPE_VEC3]: Token.TYPE_VEC3,
             [Token.TYPE_VEC4]: Token.TYPE_VEC4
-        },
-
-        UNARY: [
-            Token.ADD,
-            Token.SUB
-        ]
+        }
     },
 
     [Token.TYPE_VEC4]: {
@@ -346,12 +321,7 @@ export const OutputTypeTable = Object.freeze({
             [Token.TYPE_VEC2]: Token.TYPE_VEC4,
             [Token.TYPE_VEC3]: Token.TYPE_VEC4,
             [Token.TYPE_VEC4]: Token.TYPE_VEC4
-        },
-
-        UNARY: [
-            Token.ADD,
-            Token.SUB
-        ]
+        }
     },
 
     [Token.TYPE_MAT3]: {
@@ -369,12 +339,7 @@ export const OutputTypeTable = Object.freeze({
             [Token.TYPE_VEC3]: Token.TYPE_VEC3,
             [Token.TYPE_VEC4]: Token.TYPE_VEC4,
             [Token.TYPE_MAT3]: Token.TYPE_MAT3,
-        },
-
-        UNARY: [
-            Token.ADD,
-            Token.SUB
-        ]
+        }
     },
 
     [Token.TYPE_MAT4]: {
@@ -392,12 +357,7 @@ export const OutputTypeTable = Object.freeze({
             [Token.TYPE_VEC3]: Token.TYPE_VEC4,
             [Token.TYPE_VEC4]: Token.TYPE_VEC4,
             [Token.TYPE_MAT4]: Token.TYPE_MAT4,
-        },
-
-        UNARY: [
-            Token.ADD,
-            Token.SUB
-        ]
+        }
     },
 
     [Token.TYPE_QUAT]: {
@@ -425,11 +385,114 @@ export const OutputTypeTable = Object.freeze({
         [Token.POW]: {
             [Token.TYPE_INT]: Token.TYPE_QUAT,
             [Token.TYPE_FLOAT]: Token.TYPE_QUAT
-        },
-
-        UNARY: [
-            Token.ADD,
-            Token.SUB
-        ]
+        }
     }
+})
+
+export const UnaryTable = Object.freeze({
+    [Token.TYPE_INT]: [
+        Token.ADD,
+        Token.SUB,
+        Token.NOT,
+        Token.INCREMENT,
+        Token.DECREMENT
+    ],
+
+    [Token.TYPE_FLOAT]: [
+        Token.ADD,
+        Token.SUB
+    ],
+
+    [Token.TYPE_BOOL]: [
+        Token.LOGIC_NOT
+    ],
+
+    [Token.TYPE_VEC2]: [
+        Token.ADD,
+        Token.SUB
+    ],
+
+    [Token.TYPE_VEC3]: [
+        Token.ADD,
+        Token.SUB
+    ],
+
+    [Token.TYPE_VEC4]: [
+        Token.ADD,
+        Token.SUB
+    ],
+
+    [Token.TYPE_QUAT]: [
+        Token.ADD,
+        Token.SUB
+    ],
+
+    [Token.TYPE_MAT3]: [
+        Token.ADD,
+        Token.SUB
+    ],
+
+    [Token.TYPE_MAT4]: [
+        Token.ADD,
+        Token.SUB
+    ]
+})
+
+export const ConstructorsTable = Object.freeze({
+    [Token.TYPE_INT]: [
+        [ Token.TYPE_FLOAT ],
+        [ Token.TYPE_BOOL ]
+    ],
+
+    [Token.TYPE_BOOL]: [
+        [ Token.TYPE_INT ]
+    ],
+
+    [Token.TYPE_VEC2]: [
+        [ Token.TYPE_FLOAT, Token.TYPE_FLOAT ],
+        [ Token.TYPE_VEC2 ]
+    ],
+
+    [Token.TYPE_VEC3]: [
+        [ Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT ],
+        [ Token.TYPE_VEC2, Token.TYPE_FLOAT ],
+        [ Token.TYPE_VEC3 ]
+    ],
+
+    [Token.TYPE_VEC4]: [
+        [ Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT ],
+        [ Token.TYPE_VEC2, Token.TYPE_FLOAT, Token.TYPE_FLOAT ],
+        [ Token.TYPE_VEC3, Token.TYPE_FLOAT ],
+        [ Token.TYPE_VEC4 ]
+    ],
+
+    [Token.TYPE_QUAT]: [
+        [ Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT ]
+    ],
+
+    [Token.TYPE_MAT3]: [
+        [
+            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
+            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
+            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT
+        ]
+    ],
+
+    [Token.TYPE_MAT4]: [
+        [
+            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
+            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
+            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
+            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT
+        ]
+    ]
+})
+
+export const IndexableTypesTable = Object.freeze({
+    [Token.TYPE_VEC2]: Token.TYPE_FLOAT,
+    [Token.TYPE_VEC3]: Token.TYPE_FLOAT,
+    [Token.TYPE_VEC4]: Token.TYPE_FLOAT,
+    [Token.TYPE_QUAT]: Token.TYPE_FLOAT,
+    [Token.TYPE_MAT3]: Token.TYPE_FLOAT,
+    [Token.TYPE_MAT4]: Token.TYPE_FLOAT
 })
