@@ -242,7 +242,7 @@ const AssignOperatorToRegular = Object.freeze({
     [Token.ASSIGN_RSHIFT]: Token.RSHIFT
 })
 
-const OperatorsCharacters = ",+-*/><!=|&^~%()[]{}"
+const OperatorsCharacters = ":,+-*/><!=|&^~%()[]{}"
 
 const Types = Object.freeze([
     Token.TYPE_INT,
