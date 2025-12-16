@@ -215,27 +215,25 @@ class UnaryExpressionAnalyzer extends ExpressionAnalyzer {
     }
 }
 
-function getAnalyzers() {
-    return Object.freeze({
-        "bin_analyzer": new BinaryExpressionAnalyzer(),
-        "var_analyzer": new VariableExpressionAnalyzer(),
-        "num_analyzer": new ExpressionAnalyzer(
-            expressions.NumberExpression,
-            exp => exp.isInteger() ? Token.TYPE_INT : Token.TYPE_FLOAT
-        ),
-        "bool_analyzer": new ExpressionAnalyzer(
-            expressions.BoolExpression,
-            Token.TYPE_BOOL
-        ),
-        "new_object_analyzer": new NewObjectExpressionAnalyzer(),
-        "function_analyzer": new FunctionExpressionAnalyzer(),
-        "index_analyzer": new IndexExpressionAnalyzer(),
-        "unary_analyzer": new UnaryExpressionAnalyzer()
-    })
-}
+const Analyzers = Object.freeze({
+    "bin_analyzer": new BinaryExpressionAnalyzer(),
+    "var_analyzer": new VariableExpressionAnalyzer(),
+    "num_analyzer": new ExpressionAnalyzer(
+        expressions.NumberExpression,
+        exp => exp.isInteger() ? Token.TYPE_INT : Token.TYPE_FLOAT
+    ),
+    "bool_analyzer": new ExpressionAnalyzer(
+        expressions.BoolExpression,
+        Token.TYPE_BOOL
+    ),
+    "new_object_analyzer": new NewObjectExpressionAnalyzer(),
+    "function_analyzer": new FunctionExpressionAnalyzer(),
+    "index_analyzer": new IndexExpressionAnalyzer(),
+    "unary_analyzer": new UnaryExpressionAnalyzer()
+})
 
 export function analyzeExpression(context, expression, pushError) {
-    const analyzer = getAnalyzers().find(x => x.canAnalyze(expression))
+    const analyzer = Analyzers.find(x => x.canAnalyze(expression))
 
     if(analyzer != null) {
         return analyzer.analyze(expression, context, pushError)
