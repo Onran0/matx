@@ -18,12 +18,14 @@
 
  ***/
 
+import {Token} from "../parse/lexer.js"
+
 const _Libraries = Object.freeze({
     vec3: {
         functions: {
             length: {
-                arguments: [ "vec3" ],
-                result: "num",
+                arguments: [ Token.TYPE_VEC3 ],
+                result: Token.TYPE_FLOAT,
                 jsFunction: function(vec) {
                     return Math.sqrt(vec[0]**2 + vec[1]**2 + vec[2]**2);
                 }
@@ -33,18 +35,18 @@ const _Libraries = Object.freeze({
 
     env: {
         fields: {
-            posX: "num", posY: "num", posZ: "num",
-            rotX: "num", rotY: "num", rotZ: "num",
+            posX: Token.TYPE_FLOAT, posY: Token.TYPE_FLOAT, posZ: Token.TYPE_FLOAT,
+            rotX: Token.TYPE_FLOAT, rotY: Token.TYPE_FLOAT, rotZ: Token.TYPE_FLOAT,
 
-            rightX: "num", rightY: "num", rightZ: "num",
-            forwX: "num", forwY: "num", forwZ: "num",
-            upX: "num", upY: "num", upZ: "num",
+            rightX: Token.TYPE_FLOAT, rightY: Token.TYPE_FLOAT, rightZ: Token.TYPE_FLOAT,
+            forwX: Token.TYPE_FLOAT, forwY: Token.TYPE_FLOAT, forwZ: Token.TYPE_FLOAT,
+            upX: Token.TYPE_FLOAT, upY: Token.TYPE_FLOAT, upZ: Token.TYPE_FLOAT,
 
-            Bcount: "int", Rmass: "num", Bmass: "num",
+            Bcount: Token.TYPE_INT, Rmass: Token.TYPE_FLOAT, Bmass: Token.TYPE_FLOAT,
 
-            time: "num", Ltime: "num",
+            time: Token.TYPE_FLOAT, Ltime: Token.TYPE_FLOAT,
 
-            Lval: "num"
+            Lval: Token.TYPE_FLOAT
         }
     }
 })
