@@ -76,7 +76,7 @@ export class NumberExpression extends Expression {
         this.#typeInt = typeInt
     }
 
-    get isInteger() {
+    isInteger() {
         return this.#typeInt
     }
 
