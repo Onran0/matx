@@ -55,8 +55,8 @@ class BinaryExpressionAnalyzer extends ExpressionAnalyzer {
         if(!Token.isOperator(expression.operation)) {
             pushError(expression, `undefined operator '${expression.operation}'`)
         } else {
-            const leftType = analyzeExpression(expression.leftExpression, context, pushError)
-            const rightType = analyzeExpression(expression.leftExpression, context, pushError)
+            const leftType = analyzeExpression(context, expression.leftExpression, pushError)
+            const rightType = analyzeExpression(context, expression.rightExpression, pushError)
 
             if(leftType != null && rightType != null) {
                 const outputType = BinaryTable[leftType][expression.operation][rightType]
@@ -260,4 +260,6 @@ export function analyzeExpression(context, expression, pushError, statement) {
     if(analyzer != null) {
         return analyzer.analyze(expression, context, pushError)
     } else pushError(expression, "can't analyze expression of this type")
+
+    console.log(123123, expression)
 }

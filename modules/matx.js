@@ -33,7 +33,7 @@ export function translate(code) {
 
     const [ context, semanticErrors ] = analyze(statements)
 
-    errors.push(semanticErrors)
+    errors.push(...semanticErrors)
 
     if(errors.length === 0) {
         console.log(context)

@@ -1,3 +1,5 @@
 fun test(a: int, b: num, c: vec2, d: bool) {
     return vec3(1, 2, 3);
 }
+
+return 2;

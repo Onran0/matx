@@ -209,8 +209,13 @@ export function analyze(ast, parentContext, pushError) {
         } else pushError(statement, "can't analyze statement of this type")
     }
 
-    if(parentContext == null && context.returnType !== Token.TYPE_FLOAT) {
-        pushError(ast[ast.length - 1], context.returnType == null ? "root context must have a return" : `the root context must return a value of type '${Token.TYPE_FLOAT}'`)
+    if(
+        parentContext == null &&
+        context.returnType !== Token.TYPE_FLOAT &&
+        context.returnType !== Token.TYPE_INT
+    ) {
+        pushError(ast[ast.length - 1], context.returnType == null ? "root context must have a return" : `the root context must return a value of number type`)
+        errors[errors.length - 1].msg = errors[errors.length - 1].rawMsg
     }
 
     return [ context, errors ]
