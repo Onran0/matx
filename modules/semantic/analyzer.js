@@ -50,7 +50,7 @@ class VariableDeclarationAnalyzer extends AnalyzerTemplate {
             if(statement.statement.expression)
                 analyzeExpression(context, statement.statement.expression, pushError, statement)
 
-            checkTypeDef(context, statement.statement.type, statement, pushError)
+            checkTypeDef(context, statement, statement.statement.type, pushError)
 
             setEntityProperty(context, "vars", statement.statement.name, "type", statement.statement.type);
         }
@@ -71,7 +71,7 @@ class FunctionDeclarationAnalyzer extends AnalyzerTemplate {
                     pushError(statement, `argument '${arg.name}' is already defined`)
                 }
 
-                checkTypeDef(context, statement.statement, arg.type, pushError)
+                checkTypeDef(context, statement, arg.type, pushError)
 
                 definedArgsTable.push(arg.name)
             }

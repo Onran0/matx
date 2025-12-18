@@ -175,14 +175,25 @@ export class FunctionExpression extends Expression {
 }
 
 export class IndexExpression extends Expression {
+    #target
+    #index
+
     constructor(target, index) {
         super()
-        this.target = target
-        this.index = index
+        this.#target = target
+        this.#index = index
+    }
+
+    get target() {
+        return this.#target
+    }
+
+    get index() {
+        return this.#index
     }
 
     toString() {
-        return `${this.target.toString()}[${this.index.toString()}]`
+        return `${this.#target.toString()}[${this.#index.toString()}]`
     }
 }
 

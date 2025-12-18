@@ -107,12 +107,16 @@ class NewObjectExpressionAnalyzer extends ExpressionAnalyzer {
                 }
 
                 if(ConstructorsTable[expression.type].find(x => {
+                    if(x.length !== constructorTypes.length) {
+                        return false
+                    }
+
                     let match = true
 
                     x.every((cType, index) => {
                         if(
                             cType !== constructorTypes[index] &&
-                            (
+                            !(
                                 cType === Token.TYPE_INT && constructorTypes[index] === Token.TYPE_FLOAT ||
                                 cType === Token.TYPE_FLOAT && constructorTypes[index] === Token.TYPE_INT
                             )
@@ -189,7 +193,7 @@ class IndexExpressionAnalyzer extends ExpressionAnalyzer {
     }
 
     analyze(expression, context, pushError) {
-        const type = analyzeExpression(context, expression, pushError)
+        const type = analyzeExpression(context, expression.index, pushError)
 
         if(type != null) {
             if(type !== Token.TYPE_INT) {
@@ -215,6 +219,15 @@ class UnaryExpressionAnalyzer extends ExpressionAnalyzer {
     }
 
     analyze(expression, context, pushError) {
+        if(
+            (expression.operatorType === Token.INCREMENT ||
+            expression.operatorType === Token.DECREMENT) &&
+            !(expression.operandExpression instanceof expressions.VariableExpression)
+        ) {
+            pushError(expression, "increment or decrement can be applied only for variables")
+            return
+        }
+
         const type = analyzeExpression(context, expression.operandExpression, pushError)
 
         if(type != null) {
