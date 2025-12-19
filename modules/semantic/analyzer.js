@@ -46,7 +46,7 @@ class VariableDeclarationAnalyzer extends AnalyzerTemplate {
     }
 
     analyze(statement, context, pushError) {
-        if(checkEntityDef(context, statement, pushError)) {
+        if(checkEntityDef(context, statement, statement.statement.name, pushError)) {
             if(statement.statement.expression)
                 analyzeExpression(context, statement.statement.expression, pushError, statement)
 
@@ -149,7 +149,7 @@ export function setEntityProperty(context, entitiesType, name, property, value) 
 function checkEntityDef(context, statement, name, pushError) {
     for(const entitiesType of Object.keys(entitiesTypes)) {
         if (context[entitiesType][name] != null) {
-            pushError(statement, `${entitiesType[entitiesType]} '${name}' already defined in current context`)
+            pushError(statement, `${entitiesTypes[entitiesType]} '${name}' already defined in current context`)
             return false
         }
     }

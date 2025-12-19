@@ -2,6 +2,6 @@ fun test(a: int, b: num, c: vec2, d: bool) {
     return vec3(1, 2, 3);
 }
 
-int eee;
+int test = 2;
 
-return vec3(3, 4, 3)[++eee];
+return vec3(3, 4, 3)[test];
