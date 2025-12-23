@@ -162,8 +162,10 @@ class FunctionExpressionAnalyzer extends ExpressionAnalyzer {
 
             let match = true
 
-            getEntityProperty(context, "functions", expression.name, "argsTypes").every(
-                (argType, index) => {
+            getEntityProperty(context, "functions", expression.name, "arguments").every(
+                (arg, index) => {
+                    const argType = arg.type
+
                     if(
                         argType !== types[index] &&
                         (

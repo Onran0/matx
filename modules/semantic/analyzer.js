@@ -23,6 +23,7 @@ import * as statements from "../constructions/statements.js";
 import {analyzeExpression} from "./expressions_analyzer.js";
 import {BinaryTable} from "./types_meta.js";
 import {Token} from "../parse/lexer.js";
+import {getLibraries} from "../library/core.js";
 
 class AnalyzerTemplate {
     #statementType
@@ -73,18 +74,20 @@ class FunctionDeclarationAnalyzer extends AnalyzerTemplate {
 
                 checkTypeDef(context, statement, arg.type, pushError)
 
-                definedArgsTable.push(arg.name)
+                definedArgsTable.push({ name: arg.name, type: arg.type })
             }
 
             const [ functionContext ] = analyze(statement.statement.statements, context, pushError)
 
             functionContext.insideFunction = statement.statement.name
+            functionContext.arguments = definedArgsTable
+            functionContext.statementRef = statement
 
-            if(functionContext.returnType == null) {
+            if(functionContext.result == null) {
                 pushError(statement, "function must have a return")
             }
 
-            setEntityProperty(context, "functions", statement.statement.name, "type", functionContext.returnType);
+            setEntityProperty(context, "functions", statement.statement.name, "type", functionContext.result);
         }
     }
 }
@@ -95,9 +98,9 @@ class ReturnAnalyzer extends AnalyzerTemplate {
     }
 
     analyze(statement, context, pushError) {
-        if(context.returnType != null) {
+        if(context.result != null) {
             pushError(statement, `context already have a return`)
-        } else context.returnType = analyzeExpression(context, statement.statement.expression, pushError, statement)
+        } else context.result = analyzeExpression(context, statement.statement.expression, pushError, statement)
     }
 }
 
@@ -110,8 +113,9 @@ class BlockAnalyzer extends AnalyzerTemplate {
         const [ blockContext ] = analyze(statement.statement.statements, context, pushError)
 
         blockContext.insideBlock = statement.statement
+        blockContext.statementRef = statement
 
-        if(blockContext.returnType != null)
+        if(blockContext.result != null)
             pushError(statement, `block cannot have a return`)
     }
 }
@@ -127,8 +131,8 @@ class VariableAssignAnalyzer extends AnalyzerTemplate {
 }
 
 const entitiesTypes = Object.freeze({
-    vars: "variable",
-    functions: "function"
+    vars: "vars",
+    functions: "functions"
 })
 
 export function getEntityProperty(context, entitiesType, name, property) {
@@ -136,7 +140,17 @@ export function getEntityProperty(context, entitiesType, name, property) {
 
     if(val != null)
         return val
-    else if(context.parentContext != null)
+    else if(context.libraries != null) {
+        const libEntitiesType = entitiesType !== "vars" ? entitiesType : "fields";
+
+        for(const library of context.libraries) {
+            if(library[name] != null && library[name].entityType === libEntitiesType) {
+                return library[name][property]
+            }
+        }
+    }
+
+    if(context.parentContext != null)
         return getEntityProperty(context.parentContext, entitiesType, name, property)
     else
         return undefined
@@ -148,10 +162,22 @@ export function setEntityProperty(context, entitiesType, name, property, value) 
 
 function checkEntityDef(context, statement, name, pushError) {
     for(const entitiesType of Object.keys(entitiesTypes)) {
-        if (context[entitiesType][name] != null) {
+        let cond = context[entitiesType][name] != null
+
+        if(!cond && context.libraries != null) {
+            for(const lib of context.libraries) {
+                if(lib[name] != null) {
+                    cond = true
+                    break
+                }
+            }
+        }
+
+        if (cond) {
             pushError(statement, `${entitiesTypes[entitiesType]} '${name}' already defined in current context`)
             return false
-        }
+        } else if(context.parentContext != null)
+            return checkEntityDef(context.parentContext. statement, name, pushError)
     }
 
     return true
@@ -179,12 +205,14 @@ export function analyze(ast, parentContext, pushError) {
     let context = {
         vars: { },
         functions: { },
-        returnType: null,
+        result: null,
         parentContext: parentContext
     }
 
     if(parentContext != null)
         (parentContext.childContexts ??= [ ]).push(context)
+    else
+        context.libraries = getLibraries()
 
     let errors = [ ]
 
@@ -211,10 +239,10 @@ export function analyze(ast, parentContext, pushError) {
 
     if(
         parentContext == null &&
-        context.returnType !== Token.TYPE_FLOAT &&
-        context.returnType !== Token.TYPE_INT
+        context.result !== Token.TYPE_FLOAT &&
+        context.result !== Token.TYPE_INT
     ) {
-        pushError(ast[ast.length - 1], context.returnType == null ? "root context must have a return" : `the root context must return a value of number type`)
+        pushError(ast[ast.length - 1], context.result == null ? "root context must have a return" : `the root context must return a value of number type`)
         errors[errors.length - 1].msg = errors[errors.length - 1].rawMsg
     }
 

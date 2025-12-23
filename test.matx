@@ -2,6 +2,6 @@ fun test(a: int, b: num, c: vec2, d: bool) {
     return vec3(1, 2, 3);
 }
 
-int test = 2;
+int test2 = vec3.length(vec3(3, 4, 3));
 
-return vec3(3, 4, 3)[test];
+return vec3(3, 4, 3)[test2];
