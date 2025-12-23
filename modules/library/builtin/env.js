@@ -18,22 +18,12 @@
 
  ***/
 
-import {Token} from "../parse/lexer.js"
+import {Token} from "../../parse/lexer.js"
+import {convertForExport} from "../core.js";
 
-const _Libraries = Object.freeze({
-    vec3: {
-        functions: {
-            length: {
-                arguments: [ Token.TYPE_VEC3 ],
-                result: Token.TYPE_FLOAT,
-                jsFunction: function(vec) {
-                    return Math.sqrt(vec[0]**2 + vec[1]**2 + vec[2]**2);
-                }
-            }
-        }
-    },
-
-    env: {
+export default convertForExport(
+    {
+        name: "env",
         fields: {
             posX: Token.TYPE_FLOAT, posY: Token.TYPE_FLOAT, posZ: Token.TYPE_FLOAT,
             rotX: Token.TYPE_FLOAT, rotY: Token.TYPE_FLOAT, rotZ: Token.TYPE_FLOAT,
@@ -49,17 +39,4 @@ const _Libraries = Object.freeze({
             Lval: Token.TYPE_FLOAT
         }
     }
-})
-
-const EntitiesTypes = [ "functions", "fields" ]
-const DotLibraries = { }
-
-for(const libName in _Libraries) {
-    for(const entityType in EntitiesTypes) {
-        for(const entityName in _Libraries[libName][entityType]) {
-            DotLibraries[`${libName}.${entityName}`] = _Libraries[libName][entityType][entityName]
-        }
-    }
-}
-
-export const Libraries = Object.freeze(DotLibraries)
+)

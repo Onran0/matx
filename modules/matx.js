@@ -20,16 +20,15 @@
 
 import * as fs from 'fs';
 
+import {initialize as initializeLibraries} from "./library/core.js";
+
 import {parse} from "./parse/parser.js";
 import {analyze} from "./semantic/analyzer.js";
 
+await initializeLibraries()
+
 export function translate(code) {
     const [statements, errors] = parse(code);
-
-    for(const statement of statements) {
-        console.log(statement.statement.toString())
-        console.log()
-    }
 
     const [ context, semanticErrors ] = analyze(statements)
 
@@ -37,10 +36,15 @@ export function translate(code) {
 
     if(errors.length === 0) {
         console.log(context)
-    }
 
-    for(const error of errors) {
-        console.log(error)
+        for(const statement of statements) {
+            console.log(statement.statement.toString())
+            console.log()
+        }
+    } else {
+        for(const error of errors) {
+            console.log(error)
+        }
     }
 }
 
