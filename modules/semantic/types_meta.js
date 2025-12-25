@@ -100,6 +100,36 @@ export const BinaryTable = Object.freeze({
 
         [RegularOperators.RSHIFT] : {
             [Types.INT]: Types.INT
+        },
+
+        [RegularOperators.EQL]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.NEQL]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.GRTR]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.LESS]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.GRTR_OR_EQL]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.LESS_OR_EQL]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
         }
     },
 
@@ -161,6 +191,36 @@ export const BinaryTable = Object.freeze({
         [RegularOperators.POW] : {
             [Types.INT]: Types.NUM,
             [Types.NUM]: Types.NUM
+        },
+
+        [RegularOperators.EQL]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.NEQL]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.GRTR]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.LESS]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.GRTR_OR_EQL]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
+        },
+
+        [RegularOperators.LESS_OR_EQL]: {
+            [Types.INT]: Types.BOOL,
+            [Types.NUM]: Types.BOOL
         }
     },
 
@@ -170,22 +230,6 @@ export const BinaryTable = Object.freeze({
         },
 
         [RegularOperators.NEQL]: {
-            [Types.BOOL]: Types.BOOL
-        },
-
-        [RegularOperators.GRTR]: {
-            [Types.BOOL]: Types.BOOL
-        },
-
-        [RegularOperators.LESS]: {
-            [Types.BOOL]: Types.BOOL
-        },
-
-        [RegularOperators.GRTR_OR_EQL]: {
-            [Types.BOOL]: Types.BOOL
-        },
-
-        [RegularOperators.LESS_OR_EQL]: {
             [Types.BOOL]: Types.BOOL
         },
 
@@ -202,41 +246,39 @@ export const BinaryTable = Object.freeze({
         [RegularOperators.ADD]: {
             [Types.INT]: Types.VEC2,
             [Types.NUM]: Types.VEC2,
-            [Types.VEC2]: Types.VEC2,
-            [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.VEC2]: Types.VEC2
         },
 
         [RegularOperators.SUB]: {
             [Types.INT]: Types.VEC2,
             [Types.NUM]: Types.VEC2,
-            [Types.VEC2]: Types.VEC2,
-            [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.VEC2]: Types.VEC2
         },
 
         [RegularOperators.MUL]: {
             [Types.INT]: Types.VEC2,
             [Types.NUM]: Types.VEC2,
-            [Types.VEC2]: Types.VEC2,
-            [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.VEC2]: Types.VEC2
         },
 
         [RegularOperators.DIV]: {
             [Types.INT]: Types.VEC2,
             [Types.NUM]: Types.VEC2,
-            [Types.VEC2]: Types.VEC2,
-            [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.VEC2]: Types.VEC2
         },
 
         [RegularOperators.INT_DIV]: {
             [Types.INT]: Types.VEC2,
             [Types.NUM]: Types.VEC2,
-            [Types.VEC2]: Types.VEC2,
-            [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.VEC2]: Types.VEC2
+        },
+
+        [RegularOperators.EQL]: {
+            [Types.VEC2]: Types.BOOL
+        },
+
+        [RegularOperators.NEQL]: {
+            [Types.VEC2]: Types.BOOL
         }
     },
 
@@ -244,41 +286,40 @@ export const BinaryTable = Object.freeze({
         [RegularOperators.ADD]: {
             [Types.INT]: Types.VEC3,
             [Types.NUM]: Types.VEC3,
-            [Types.VEC2]: Types.VEC3,
-            [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.VEC3]: Types.VEC3
         },
 
         [RegularOperators.SUB]: {
             [Types.INT]: Types.VEC3,
             [Types.NUM]: Types.VEC3,
-            [Types.VEC2]: Types.VEC3,
-            [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.VEC3]: Types.VEC3
         },
 
         [RegularOperators.MUL]: {
             [Types.INT]: Types.VEC3,
             [Types.NUM]: Types.VEC3,
-            [Types.VEC2]: Types.VEC3,
             [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.MAT3]: Types.MAT3
         },
 
         [RegularOperators.DIV]: {
             [Types.INT]: Types.VEC3,
             [Types.NUM]: Types.VEC3,
-            [Types.VEC2]: Types.VEC3,
-            [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.VEC3]: Types.VEC3
         },
 
         [RegularOperators.INT_DIV]: {
             [Types.INT]: Types.VEC3,
             [Types.NUM]: Types.VEC3,
-            [Types.VEC2]: Types.VEC3,
-            [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4
+            [Types.VEC3]: Types.VEC3
+        },
+
+        [RegularOperators.EQL]: {
+            [Types.VEC3]: Types.BOOL
+        },
+
+        [RegularOperators.NEQL]: {
+            [Types.VEC3]: Types.BOOL
         }
     },
 
@@ -286,24 +327,18 @@ export const BinaryTable = Object.freeze({
         [RegularOperators.ADD]: {
             [Types.INT]: Types.VEC4,
             [Types.NUM]: Types.VEC4,
-            [Types.VEC2]: Types.VEC4,
-            [Types.VEC3]: Types.VEC4,
             [Types.VEC4]: Types.VEC4
         },
 
         [RegularOperators.SUB]: {
             [Types.INT]: Types.VEC4,
             [Types.NUM]: Types.VEC4,
-            [Types.VEC2]: Types.VEC4,
-            [Types.VEC3]: Types.VEC4,
             [Types.VEC4]: Types.VEC4
         },
 
         [RegularOperators.MUL]: {
             [Types.INT]: Types.VEC4,
             [Types.NUM]: Types.VEC4,
-            [Types.VEC2]: Types.VEC4,
-            [Types.VEC3]: Types.VEC4,
             [Types.VEC4]: Types.VEC4,
             [Types.MAT4]: Types.VEC4
         },
@@ -311,17 +346,21 @@ export const BinaryTable = Object.freeze({
         [RegularOperators.DIV]: {
             [Types.INT]: Types.VEC4,
             [Types.NUM]: Types.VEC4,
-            [Types.VEC2]: Types.VEC4,
-            [Types.VEC3]: Types.VEC4,
             [Types.VEC4]: Types.VEC4
         },
 
         [RegularOperators.INT_DIV]: {
             [Types.INT]: Types.VEC4,
             [Types.NUM]: Types.VEC4,
-            [Types.VEC2]: Types.VEC4,
-            [Types.VEC3]: Types.VEC4,
             [Types.VEC4]: Types.VEC4
+        },
+
+        [RegularOperators.EQL]: {
+            [Types.VEC4]: Types.BOOL
+        },
+
+        [RegularOperators.NEQL]: {
+            [Types.VEC4]: Types.BOOL
         }
     },
 
@@ -338,8 +377,15 @@ export const BinaryTable = Object.freeze({
             [Types.INT]: Types.MAT3,
             [Types.NUM]: Types.MAT3,
             [Types.VEC3]: Types.VEC3,
-            [Types.VEC4]: Types.VEC4,
             [Types.MAT3]: Types.MAT3,
+        },
+
+        [RegularOperators.EQL]: {
+            [Types.MAT3]: Types.BOOL
+        },
+
+        [RegularOperators.NEQL]: {
+            [Types.MAT3]: Types.BOOL
         }
     },
 
@@ -355,9 +401,16 @@ export const BinaryTable = Object.freeze({
         [RegularOperators.MUL]: {
             [Types.INT]: Types.MAT4,
             [Types.NUM]: Types.MAT4,
-            [Types.VEC3]: Types.VEC4,
             [Types.VEC4]: Types.VEC4,
             [Types.MAT4]: Types.MAT4,
+        },
+
+        [RegularOperators.EQL]: {
+            [Types.MAT4]: Types.BOOL
+        },
+
+        [RegularOperators.NEQL]: {
+            [Types.MAT4]: Types.BOOL
         }
     },
 
@@ -386,6 +439,14 @@ export const BinaryTable = Object.freeze({
         [RegularOperators.POW]: {
             [Types.INT]: Types.QUAT,
             [Types.NUM]: Types.QUAT
+        },
+
+        [RegularOperators.EQL]: {
+            [Types.QUAT]: Types.BOOL
+        },
+
+        [RegularOperators.NEQL]: {
+            [Types.QUAT]: Types.BOOL
         }
     }
 })
@@ -394,9 +455,7 @@ export const UnaryTable = Object.freeze({
     [Types.INT]: [
         RegularOperators.ADD,
         RegularOperators.SUB,
-        RegularOperators.NOT,
-        RegularOperators.INCREMENT,
-        RegularOperators.DECREMENT
+        RegularOperators.NOT
     ],
 
     [Types.NUM]: [
@@ -445,8 +504,14 @@ export const ConstructorsTable = Object.freeze({
         [ Types.BOOL ]
     ],
 
+    [Types.NUM]: [
+        [ Types.INT ],
+        [ Types.BOOL ]
+    ],
+
     [Types.BOOL]: [
-        [ Types.INT ]
+        [ Types.INT ],
+        [ Types.NUM ]
     ],
 
     [Types.VEC2]: [
@@ -468,7 +533,9 @@ export const ConstructorsTable = Object.freeze({
     ],
 
     [Types.QUAT]: [
-        [ Types.NUM, Types.NUM, Types.NUM, Types.NUM ]
+        [ Types.NUM, Types.NUM, Types.NUM, Types.NUM ],
+        [ Types.NUM, Types.VEC3 ],
+        [ Types.QUAT ]
     ],
 
     [Types.MAT3]: [
