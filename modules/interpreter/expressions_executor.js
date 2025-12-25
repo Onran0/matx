@@ -35,13 +35,23 @@ class ExpressionsExecutor {
 
     execute(context, expression, pushError) {}
 
-    reset() {}
-
     canExecute(expression) {
         return expression instanceof this.#expressionType
     }
 }
 
-export function executeExpression(context, statement, expression, pushError) {
+const Executors = Object.freeze([
 
+])
+
+export function executeExpression(context, expression, pushError, statement) {
+    if(statement != null) {
+        const oldPushError = pushError
+
+        pushError = function(msg) {
+            oldPushError(statement, msg)
+        }
+    }
+
+    return Executors.find(x => x.canExecute(expression)).execute(context, expression, pushError)
 }

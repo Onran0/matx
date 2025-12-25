@@ -54,7 +54,7 @@ class VariableDeclarationExecutor extends Function_executor {
     }
 
     execute(context, statement, pushError) {
-        setupVar(statement.name, statement.type, executeExpression(context, statement, statement.expression, pushError).value)
+        setupVar(statement.name, statement.type, executeExpression(context, statement.expression, pushError, statement).value)
     }
 }
 
@@ -85,7 +85,7 @@ class VariableAssignExecutor extends Function_executor {
 
     execute(context, statement, pushError) {
         const name = statement.name
-        let result = executeExpression(context, statement, statement.expression, pushError)
+        let result = executeExpression(context, statement.expression, pushError, statement)
         const index = statement.indexExpression != null ? executeFunction(context, statement, statement.indexExpression, pushError).value : null
 
         const varType = getVarType(context, name)
@@ -105,13 +105,13 @@ class VariableAssignExecutor extends Function_executor {
                 leftExpr = new IndexExpression(leftExpr, new NumberExpression(index, true))
 
             result = executeExpression(
-                context, statement,
+                context,
                 new BinaryExpression(
                     leftExpr,
                     result.valueExpression,
                     convertAssignToRegular(statement.operation)
                 ),
-                pushError
+                pushError, statement
             )
         }
 
