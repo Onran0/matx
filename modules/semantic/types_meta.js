@@ -497,3 +497,12 @@ export const IndexableTypesTable = Object.freeze({
     [Types.MAT3]: Types.NUM,
     [Types.MAT4]: Types.NUM
 })
+
+export const IndexableTypesSize = Object.freeze({
+    [Types.VEC2]: 2,
+    [Types.VEC3]: 3,
+    [Types.VEC4]: 4,
+    [Types.QUAT]: 4,
+    [Types.MAT3]: 9,
+    [Types.MAT4]: 16
+})

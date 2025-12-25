@@ -21,20 +21,29 @@
 import {parse} from '../parse/parser.js'
 import {analyze} from '../semantic/analyzer.js'
 
+import {executeFunction} from "./executor.js";
+import {setupContext} from "./context_manager.js";
 
-function createEnv(context) {
-    context.env ??= { }
-
-    for(const child of context.childContexts)
-        createEnv(child)
-}
 
 function interpretAST(statements, context) {
-    createEnv(context)
+    setupContext(context)
 
-    let result = undefined, errors = [ ]
+    let errors = [ ]
 
+    const result = executeFunction(context, statements, [ ], function(statement, msg) {
+        errors.push({
+            rawMsg: msg,
+            msg: msg + ` at column '${statement.column}', line '${statement.line}'`,
 
+            column: statement.column,
+            line: statement.line,
+
+            endColumn: statement.endToken.column,
+            endLine: statement.endToken.line,
+
+            source: "interpreter"
+        })
+    })
 
     return [ result, errors ]
 }
