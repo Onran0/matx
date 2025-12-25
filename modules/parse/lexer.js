@@ -253,7 +253,8 @@ export function tokenize(code) {
             rawMsg: msg,
             msg: msg + ` at column '${column}', line '${line}'`,
             column: column,
-            line: line
+            line: line,
+            source: "lexer"
         })
     }
 

@@ -226,7 +226,9 @@ export function analyze(ast, parentContext, pushError) {
             line: statement.line,
 
             endColumn: statement.endToken.column,
-            endLine: statement.endToken.line
+            endLine: statement.endToken.line,
+
+            source: "analyzer"
         })
     }
 

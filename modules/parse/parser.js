@@ -434,7 +434,8 @@ function parseTokens(tokens, pushStatement, pushError) {
             rawMsg: msg,
             msg: msg + ` at column '${token.column}', line '${token.line}'`,
             column: token.column,
-            line: token.line
+            line: token.line,
+            source: "parser"
         })
     }
 
