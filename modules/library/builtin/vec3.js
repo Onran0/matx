@@ -18,7 +18,7 @@
 
  ***/
 
-import {Token} from "../../parse/lexer.js"
+import Types from "../../constructions/types.js"
 import {convertForExport} from "../core.js";
 
 export default convertForExport(
@@ -27,9 +27,9 @@ export default convertForExport(
         functions: {
             length: {
                 arguments: [
-                    { name: "vector", type: Token.TYPE_VEC3 }
+                    { name: "vector", type: Types.VEC3 }
                 ],
-                result: Token.TYPE_FLOAT,
+                result: Types.NUM,
                 jsFunction: function(vec) {
                     return Math.sqrt(vec[0]**2 + vec[1]**2 + vec[2]**2);
                 }

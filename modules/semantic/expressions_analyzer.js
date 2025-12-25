@@ -18,9 +18,11 @@
 
  ***/
 
+import Types, {isType} from "../constructions/types.js"
+import {isOperator, RegularOperators} from "../constructions/operators.js"
+
 import * as expressions from "../constructions/expressions.js"
 import {BinaryTable,UnaryTable,ConstructorsTable,IndexableTypesTable} from "./types_meta.js";
-import {Token} from "../parse/lexer.js"
 import {getEntityProperty} from "./analyzer.js";
 
 class ExpressionAnalyzer {
@@ -52,7 +54,7 @@ class BinaryExpressionAnalyzer extends ExpressionAnalyzer {
     }
 
     analyze(expression, context, pushError) {
-        if(!Token.isOperator(expression.operation)) {
+        if(!isOperator(expression.operation)) {
             pushError(expression, `undefined operator '${expression.operation}'`)
         } else {
             const leftType = analyzeExpression(context, expression.leftExpression, pushError)
@@ -93,7 +95,7 @@ class NewObjectExpressionAnalyzer extends ExpressionAnalyzer {
     }
 
     analyze(expression, context, pushError) {
-        if(Token.isType(expression.type)) {
+        if(isType(expression.type)) {
             if(ConstructorsTable[expression.type]) {
                 let constructorTypes = [ ]
 
@@ -117,8 +119,8 @@ class NewObjectExpressionAnalyzer extends ExpressionAnalyzer {
                         if(
                             cType !== constructorTypes[index] &&
                             !(
-                                cType === Token.TYPE_INT && constructorTypes[index] === Token.TYPE_FLOAT ||
-                                cType === Token.TYPE_FLOAT && constructorTypes[index] === Token.TYPE_INT
+                                cType === Types.INT && constructorTypes[index] === Types.NUM ||
+                                cType === Types.NUM && constructorTypes[index] === Types.INT
                             )
                         ) {
                             match = false
@@ -169,8 +171,8 @@ class FunctionExpressionAnalyzer extends ExpressionAnalyzer {
                     if(
                         argType !== types[index] &&
                         (
-                            argType === Token.TYPE_INT && types[index] === Token.TYPE_FLOAT ||
-                            argType === Token.TYPE_FLOAT && types[index] === Token.TYPE_INT
+                            argType === Types.INT && types[index] === Types.NUM ||
+                            argType === Types.NUM && types[index] === Types.INT
                         )
                     ) {
                         match = false
@@ -198,7 +200,7 @@ class IndexExpressionAnalyzer extends ExpressionAnalyzer {
         const type = analyzeExpression(context, expression.index, pushError)
 
         if(type != null) {
-            if(type !== Token.TYPE_INT) {
+            if(type !== Types.INT) {
                 pushError(expression, `index must be int`)
             }
 
@@ -222,8 +224,8 @@ class UnaryExpressionAnalyzer extends ExpressionAnalyzer {
 
     analyze(expression, context, pushError) {
         if(
-            (expression.operatorType === Token.INCREMENT ||
-            expression.operatorType === Token.DECREMENT) &&
+            (expression.operatorType === RegularOperators.INCREMENT ||
+            expression.operatorType === RegularOperators.DECREMENT) &&
             !(expression.operandExpression instanceof expressions.VariableExpression)
         ) {
             pushError(expression, "increment or decrement can be applied only for variables")
@@ -247,11 +249,11 @@ const Analyzers = Object.freeze({
     "var_analyzer": new VariableExpressionAnalyzer(),
     "num_analyzer": new ExpressionAnalyzer(
         expressions.NumberExpression,
-        exp => exp.isInteger() ? Token.TYPE_INT : Token.TYPE_FLOAT
+        exp => exp.isInteger() ? Types.INT : Types.NUM
     ),
     "bool_analyzer": new ExpressionAnalyzer(
         expressions.BoolExpression,
-        Token.TYPE_BOOL
+        Types.BOOL
     ),
     "new_object_analyzer": new NewObjectExpressionAnalyzer(),
     "function_analyzer": new FunctionExpressionAnalyzer(),

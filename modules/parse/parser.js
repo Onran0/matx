@@ -18,9 +18,12 @@
 
  ***/
 
+import {isType} from "../constructions/types.js"
+
 import {tokenize,Token} from "./lexer.js";
 import * as statements from "../constructions/statements.js";
 import {parseExpression} from "./expressions_parser.js";
+import {AssignOperators,convertAssignToRegular} from "../constructions/operators.js";
 
 class ParserTemplate {
     isEnd(token) {}
@@ -74,7 +77,7 @@ class VariableDeclarationParser extends ParserTemplate {
     }
 
     canStartFrom(token) {
-        return Token.isType(token);
+        return isType(token.type);
     }
 }
 
@@ -129,7 +132,7 @@ class FunctionDeclarationParser extends ParserTemplate {
                     return false
                 }
 
-                if(Token.isType(token)) {
+                if(isType(token.type)) {
                     if(argumentName == null) {
                         pushError(token, "argument name expected")
                         error = true
@@ -375,7 +378,7 @@ class VariableAssignParser extends ParserTemplate {
             console.log(operatorIndex)
             pushError(buffer[operatorIndex - 1], `operator expected`)
             return
-        } else if(!Token.isAssignOperator(buffer[operatorIndex])) {
+        } else if(!AssignOperators.includes(buffer[operatorIndex])) {
             pushError(buffer[operatorIndex], `'${buffer[operatorIndex].type}' is not assign operator`)
             return
         } else operation = buffer[operatorIndex]
@@ -393,7 +396,7 @@ class VariableAssignParser extends ParserTemplate {
             new statements.VariableAssign(
                 buffer[0], buffer[buffer.length - 1],
                 varName.value, indexExpression, expression,
-                Token.convertAssignOperatorToRegular(operation)
+                convertAssignToRegular(operation)
             )
         )
     }

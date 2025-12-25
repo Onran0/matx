@@ -19,13 +19,16 @@
  ***/
 
 import * as Expressions from "../constructions/expressions.js"
+import {isType} from "../constructions/types.js"
+import SpecialSyms from "../constructions/special_syms.js"
+import {isOperator, PossibleUnaryOperators, RegularOperators} from "../constructions/operators.js"
 import {Token} from "./lexer.js"
 
-const PRECEDENCE = Object.freeze({
+const Precedence = Object.freeze({
     [Token.EOF]: -1,
-    [Token.R_BRACKET]: -1,
-    [Token.RSQ_BRACKET]: -1,
-    [Token.COMMA]: -1,
+    [SpecialSyms.R_BRACKET]: -1,
+    [SpecialSyms.RSQ_BRACKET]: -1,
+    [SpecialSyms.COMMA]: -1,
 
     /*
     -1 is need to break on:
@@ -35,42 +38,42 @@ const PRECEDENCE = Object.freeze({
     - array declaration end
      */
 
-    [Token.EQL]: 1,
-    [Token.NEQL]: 1,
-    [Token.GRTR]: 1,
-    [Token.LESS]: 1,
-    [Token.GRTR_OR_EQL]: 1,
-    [Token.LESS_OR_EQL]: 1,
-    [Token.LOGIC_OR]: 1,
+    [RegularOperators.EQL]: 1,
+    [RegularOperators.NEQL]: 1,
+    [RegularOperators.GRTR]: 1,
+    [RegularOperators.LESS]: 1,
+    [RegularOperators.GRTR_OR_EQL]: 1,
+    [RegularOperators.LESS_OR_EQL]: 1,
+    [RegularOperators.LOGIC_OR]: 1,
 
-    [Token.LOGIC_AND]: 2,
+    [RegularOperators.LOGIC_AND]: 2,
 
-    [Token.OR]: 3,
+    [RegularOperators.OR]: 3,
 
-    [Token.XOR]: 4,
+    [RegularOperators.XOR]: 4,
 
-    [Token.AND]: 5,
+    [RegularOperators.AND]: 5,
 
-    [Token.LSHIFT]: 6,
-    [Token.RSHIFT]: 6,
+    [RegularOperators.LSHIFT]: 6,
+    [RegularOperators.RSHIFT]: 6,
 
-    [Token.ADD]: 7,
-    [Token.SUB]: 7,
+    [RegularOperators.ADD]: 7,
+    [RegularOperators.SUB]: 7,
 
-    [Token.MOD]: 8,
+    [RegularOperators.MOD]: 8,
 
-    [Token.MUL]: 9,
-    [Token.DIV]: 9,
-    [Token.INT_DIV]: 9,
+    [RegularOperators.MUL]: 9,
+    [RegularOperators.DIV]: 9,
+    [RegularOperators.INT_DIV]: 9,
 
-    [Token.POW]: 10,
-    [Token.L_BRACKET]: 11
+    [RegularOperators.POW]: 10,
+    [SpecialSyms.L_BRACKET]: 11
 })
 
-const UNARY_PRIORITY = 12
-const INCDEC_PRIORITY = UNARY_PRIORITY + 1
+const UnaryPriority = 12
+const IncdecPriority = UnaryPriority + 1
 
-let POSTFIX_OPERATORS = [ Token.INCREMENT, Token.DECREMENT ]
+let PostfixOperators = [ RegularOperators.INCREMENT, RegularOperators.DECREMENT ]
 
 class ExpressionsParser {
     #tokens
@@ -101,21 +104,21 @@ class ExpressionsParser {
     }
 
     #getPrecedence(token) {
-        return PRECEDENCE[token.type] || 0
+        return Precedence[token.type] || 0
     }
 
     #parseFunctionArgs(pushError) {
         const args = []
-        while (this.#currentToken().type !== Token.R_BRACKET && this.#currentToken().type !== Token.EOF) {
+        while (this.#currentToken().type !== SpecialSyms.R_BRACKET && this.#currentToken().type !== Token.EOF) {
             const argExpr = this.parseExpression(pushError)
             args.push(argExpr)
-            if (this.#currentToken().type === Token.COMMA) {
+            if (this.#currentToken().type === SpecialSyms.COMMA) {
                 this.#consume()
             } else {
                 break
             }
         }
-        this.#consumeToken([Token.R_BRACKET], pushError)
+        this.#consumeToken([SpecialSyms.R_BRACKET], pushError)
         return args
     }
 
@@ -123,11 +126,11 @@ class ExpressionsParser {
         let leftNode
         const current = this.#currentToken()
 
-        if (Token.canBeUnaryOperator(current)) {
+        if (PossibleUnaryOperators.includes(current.type)) {
             const operatorToken = this.#consume()
             const operandExpression = this.parseExpression(pushError,
-                current.type === Token.INCREMENT ||
-                current.type === Token.DECREMENT ? INCDEC_PRIORITY : UNARY_PRIORITY
+                current.type === RegularOperators.INCREMENT ||
+                current.type === RegularOperators.DECREMENT ? IncdecPriority : UnaryPriority
             )
 
             leftNode = new Expressions.UnaryExpression(true, operandExpression, operatorToken.type)
@@ -138,7 +141,7 @@ class ExpressionsParser {
         } else if (current.type === Token.TRUE || current.type === Token.FALSE) {
             this.#consume()
             leftNode = new Expressions.BoolExpression(current.type === Token.TRUE)
-        } else if (Token.isType(current)) {
+        } else if (isType(current.type)) {
             const typeToken = this.#consume()
             this.#consumeToken([Token.L_BRACKET], pushError)
 
@@ -165,7 +168,7 @@ class ExpressionsParser {
         }
 
         while (
-            POSTFIX_OPERATORS.includes(this.#currentToken().type) ||
+            PostfixOperators.includes(this.#currentToken().type) ||
             (   this.#currentToken().type === Token.LSQ_BRACKET &&
                 this.#getPrecedence(this.#currentToken()) >= minPrecedence
             )
@@ -187,14 +190,14 @@ class ExpressionsParser {
         while (this.#getPrecedence(this.#currentToken()) >= minPrecedence) {
             const operatorToken = this.#consume()
 
-            if(!Token.isOperator(operatorToken)) {
+            if(!isOperator(operatorToken)) {
                 pushError(current, `undefined operator '${operatorToken.type}'`)
                 return null
             }
 
-            let operatorPrecedence = PRECEDENCE[operatorToken.type]
+            let operatorPrecedence = Precedence[operatorToken.type]
 
-            if (operatorToken.type === Token.POW) {
+            if (operatorToken.type === RegularOperators.POW) {
                 operatorPrecedence++
             }
 

@@ -18,25 +18,25 @@
 
  ***/
 
-import {Token} from "../../parse/lexer.js"
+import Types from "../../constructions/types.js"
 import {convertForExport} from "../core.js";
 
 export default convertForExport(
     {
         name: "env",
         fields: {
-            posX: Token.TYPE_FLOAT, posY: Token.TYPE_FLOAT, posZ: Token.TYPE_FLOAT,
-            rotX: Token.TYPE_FLOAT, rotY: Token.TYPE_FLOAT, rotZ: Token.TYPE_FLOAT,
+            posX: Types.NUM, posY: Types.NUM, posZ: Types.NUM,
+            rotX: Types.NUM, rotY: Types.NUM, rotZ: Types.NUM,
 
-            rightX: Token.TYPE_FLOAT, rightY: Token.TYPE_FLOAT, rightZ: Token.TYPE_FLOAT,
-            forwX: Token.TYPE_FLOAT, forwY: Token.TYPE_FLOAT, forwZ: Token.TYPE_FLOAT,
-            upX: Token.TYPE_FLOAT, upY: Token.TYPE_FLOAT, upZ: Token.TYPE_FLOAT,
+            rightX: Types.NUM, rightY: Types.NUM, rightZ: Types.NUM,
+            forwX: Types.NUM, forwY: Types.NUM, forwZ: Types.NUM,
+            upX: Types.NUM, upY: Types.NUM, upZ: Types.NUM,
 
-            Bcount: Token.TYPE_INT, Rmass: Token.TYPE_FLOAT, Bmass: Token.TYPE_FLOAT,
+            Bcount: Types.INT, Rmass: Types.NUM, Bmass: Types.NUM,
 
-            time: Token.TYPE_FLOAT, Ltime: Token.TYPE_FLOAT,
+            time: Types.NUM, Ltime: Types.NUM,
 
-            Lval: Token.TYPE_FLOAT
+            Lval: Types.NUM
         }
     }
 )

@@ -18,11 +18,12 @@
 
  ***/
 
+import Types, {isType} from "../constructions/types.js"
+
 import * as expressions from "../constructions/expressions.js"
 import * as statements from "../constructions/statements.js";
 import {analyzeExpression} from "./expressions_analyzer.js";
 import {BinaryTable} from "./types_meta.js";
-import {Token} from "../parse/lexer.js";
 import {getLibraries} from "../library/core.js";
 
 class AnalyzerTemplate {
@@ -184,7 +185,7 @@ function checkEntityDef(context, statement, name, pushError) {
 }
 
 function checkTypeDef(context, statement, type, pushError) {
-    if(!Token.isType(type)) {
+    if(!isType(type)) {
         pushError(statement, `type '${type}' not defined'`)
     }
 }
@@ -239,8 +240,8 @@ export function analyze(ast, parentContext, pushError) {
 
     if(
         parentContext == null &&
-        context.result !== Token.TYPE_FLOAT &&
-        context.result !== Token.TYPE_INT
+        context.result !== Types.NUM &&
+        context.result !== Types.INT
     ) {
         pushError(ast[ast.length - 1], context.result == null ? "root context must have a return" : `the root context must return a value of number type`)
         errors[errors.length - 1].msg = errors[errors.length - 1].rawMsg

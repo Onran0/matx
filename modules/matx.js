@@ -36,6 +36,7 @@ export function translate(code) {
 
     if(errors.length === 0) {
         console.log(context)
+        console.log()
 
         for(const statement of statements) {
             console.log(statement.statement.toString())

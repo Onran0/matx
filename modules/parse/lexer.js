@@ -18,102 +18,87 @@
 
  ***/
 
+import Types from "../constructions/types.js"
+import Keywords from "../constructions/keywords.js"
+import SpecialSyms from "../constructions/special_syms.js"
+import {RegularOperators, AssignOperators, OperatorsCharacters} from "../constructions/operators.js"
+
 export const Token = Object.freeze({
     NAME: "name",
     NUMBER: "number",
     COMMENT: "comment",
 
-    ASSIGN: "=",
-    ADD: "+",
-    SUB: "-",
-    MOD: "%",
-    MUL: "*",
-    DIV: "/",
-    INT_DIV: "//",
-    POW: "**",
+    ASSIGN: AssignOperators.ASSIGN,
+    ADD: RegularOperators.ADD,
+    SUB: RegularOperators.SUB,
+    MOD: RegularOperators.MOD,
+    MUL: RegularOperators.MUL,
+    DIV: RegularOperators.DIV,
+    INT_DIV: RegularOperators.INT_DIV,
+    POW: RegularOperators.POW,
 
-    XOR: "^",
-    OR: "|",
-    AND: "&",
-    NOT: "~",
-    LSHIFT: "<<",
-    RSHIFT: ">>",
+    XOR: RegularOperators.XOR,
+    OR: RegularOperators.OR,
+    AND: RegularOperators.AND,
+    NOT: RegularOperators.NOT,
+    LSHIFT: RegularOperators.LSHIFT,
+    RSHIFT: RegularOperators.RSHIFT,
 
-    INCREMENT: "++",
-    DECREMENT: "--",
+    INCREMENT: RegularOperators.INCREMENT,
+    DECREMENT: RegularOperators.DECREMENT,
 
-    ASSIGN_ADD: "+=",
-    ASSIGN_SUB: "-=",
-    ASSIGN_MOD: "%=",
-    ASSIGN_MUL: "*=",
-    ASSIGN_DIV: "/=",
-    ASSIGN_INT_DIV: "//=",
-    ASSIGN_POW: "**=",
+    ASSIGN_ADD: AssignOperators.ASSIGN_ADD,
+    ASSIGN_SUB: AssignOperators.ASSIGN_SUB,
+    ASSIGN_MOD: AssignOperators.ASSIGN_MOD,
+    ASSIGN_MUL: AssignOperators.ASSIGN_MUL,
+    ASSIGN_DIV: AssignOperators.ASSIGN_DIV,
+    ASSIGN_INT_DIV: AssignOperators.ASSIGN_INT_DIV,
+    ASSIGN_POW: AssignOperators.ASSIGN_POW,
 
-    ASSIGN_XOR: "^=",
-    ASSIGN_OR: "|=",
-    ASSIGN_AND: "&=",
-    ASSIGN_LSHIFT: "<<=",
-    ASSIGN_RSHIFT: ">>=",
+    ASSIGN_XOR: AssignOperators.ASSIGN_XOR,
+    ASSIGN_OR: AssignOperators.ASSIGN_OR,
+    ASSIGN_AND: AssignOperators.ASSIGN_AND,
+    ASSIGN_LSHIFT: AssignOperators.ASSIGN_LSHIFT,
+    ASSIGN_RSHIFT: AssignOperators.ASSIGN_RSHIFT,
 
-    EQL: "==",
-    NEQL: "!=",
-    GRTR: ">",
-    LESS: "<",
-    GRTR_OR_EQL: ">=",
-    LESS_OR_EQL: "<=",
-    LOGIC_AND: "&&",
-    LOGIC_OR: "||",
-    LOGIC_NOT: "!",
+    EQL: RegularOperators.EQL,
+    NEQL: RegularOperators.NEQL,
+    GRTR: RegularOperators.GRTR,
+    LESS: RegularOperators.LESS,
+    GRTR_OR_EQL: RegularOperators.GRTR_OR_EQL,
+    LESS_OR_EQL: RegularOperators.LESS_OR_EQL,
+    LOGIC_AND: RegularOperators.LOGIC_AND,
+    LOGIC_OR: RegularOperators.LOGIC_OR,
+    LOGIC_NOT: RegularOperators.LOGIC_NOT,
 
-    TYPE_INT: "int",
-    TYPE_FLOAT: "num",
-    TYPE_BOOL: "bool",
-    TYPE_VEC2: "vec2",
-    TYPE_VEC3: "vec3",
-    TYPE_VEC4: "vec4",
-    TYPE_MAT3: "mat3",
-    TYPE_MAT4: "mat4",
-    TYPE_QUAT: "quat",
+    TYPE_INT: Types.INT,
+    TYPE_FLOAT: Types.NUM,
+    TYPE_BOOL: Types.BOOL,
+    TYPE_VEC2: Types.VEC2,
+    TYPE_VEC3: Types.VEC3,
+    TYPE_VEC4: Types.VEC4,
+    TYPE_MAT3: Types.MAT3,
+    TYPE_MAT4: Types.MAT4,
+    TYPE_QUAT: Types.QUAT,
 
-    L_BRACKET: "(",
-    R_BRACKET: ")",
-    LF_BRACKET: "{",
-    RF_BRACKET: "}",
-    LSQ_BRACKET: "[",
-    RSQ_BRACKET: "]",
-    COMMA: ",",
-    SEMI: ";",
-    COLON: ":",
+    L_BRACKET: SpecialSyms.L_BRACKET,
+    R_BRACKET: SpecialSyms.R_BRACKET,
+    LF_BRACKET: SpecialSyms.LF_BRACKET,
+    RF_BRACKET: SpecialSyms.RF_BRACKET,
+    LSQ_BRACKET: SpecialSyms.LSQ_BRACKET,
+    RSQ_BRACKET: SpecialSyms.RSQ_BRACKET,
+    COMMA: SpecialSyms.COMMA,
+    SEMICOLON: SpecialSyms.SEMICOLON,
+    COLON: SpecialSyms.COLON,
 
-    LAMBDA: "=>",
-    FUNCTION: "fun",
+    LAMBDA: SpecialSyms.LAMBDA,
+    FUNCTION: Keywords.FUNCTION,
 
     EOF: "eof",
-    RETURN: "return",
+    RETURN: Keywords.RETURN,
 
-    TRUE: "true",
-    FALSE: "false",
-
-    isOperator: function(token) {
-        return isOperator(token)
-    },
-
-    isAssignOperator: function(token) {
-        return isAssignOperator(token)
-    },
-
-    convertAssignOperatorToRegular: function(token) {
-        return convertAssignOperatorToRegular(token)
-    },
-
-    isType: function(token) {
-        return isType(token)
-    },
-
-    canBeUnaryOperator: function(token) {
-        return canBeUnaryOperator(token)
-    },
+    TRUE: Keywords.TRUE,
+    FALSE: Keywords.FALSE,
 
     isNumber: function(token) {
         return token.type === "number"
@@ -132,7 +117,7 @@ export const Token = Object.freeze({
     }
 })
 
-const EndOfCharacters = " \t\n;"
+const EndOfCharacters = " \t\n" + SpecialSyms.SEMICOLON
 
 // quiet in the sense that they are not added to tokens like regular eof
 const SilentEndOfCharacters = " \t"
@@ -142,148 +127,13 @@ const Characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_."
 const Digits = "0123456789"
 const Dot = "."
 
-const Operators = Object.freeze([
-    Token.ASSIGN,
-
-    Token.ADD,
-    Token.SUB,
-    Token.MOD,
-    Token.MUL,
-    Token.DIV,
-    Token.INT_DIV,
-    Token.POW,
-
-    Token.XOR,
-    Token.OR,
-    Token.AND,
-    Token.NOT,
-    Token.LSHIFT,
-    Token.RSHIFT,
-
-    Token.INCREMENT,
-    Token.DECREMENT,
-
-    Token.ASSIGN_ADD,
-    Token.ASSIGN_SUB,
-    Token.ASSIGN_MOD,
-    Token.ASSIGN_MUL,
-    Token.ASSIGN_DIV,
-    Token.ASSIGN_INT_DIV,
-    Token.ASSIGN_POW,
-
-    Token.ASSIGN_XOR,
-    Token.ASSIGN_OR,
-    Token.ASSIGN_AND,
-    Token.ASSIGN_LSHIFT,
-    Token.ASSIGN_RSHIFT,
-
-    Token.EQL,
-    Token.NEQL,
-    Token.GRTR,
-    Token.LESS,
-    Token.GRTR_OR_EQL,
-    Token.LESS_OR_EQL,
-    Token.LOGIC_AND,
-    Token.LOGIC_OR,
-    Token.LOGIC_NOT,
-
-    Token.L_BRACKET,
-    Token.R_BRACKET,
-    Token.LF_BRACKET,
-    Token.RF_BRACKET,
-    Token.LSQ_BRACKET,
-    Token.RSQ_BRACKET,
-
-    Token.COMMA,
-    Token.COLON,
-
-    Token.FUNCTION,
-    Token.LAMBDA,
-
-    Token.RETURN,
-
-    Token.TRUE,
-    Token.FALSE
+const ReservedSequences = Object.freeze([
+    ...Object.values(Types),
+    ...Object.values(RegularOperators),
+    ...Object.values(AssignOperators),
+    ...Object.values(SpecialSyms).filter(x => x !== SpecialSyms.SEMICOLON),
+    ...Object.values(Keywords)
 ])
-
-const AssignOperators = Object.freeze([
-    Token.ASSIGN,
-
-    Token.ASSIGN_ADD,
-    Token.ASSIGN_SUB,
-    Token.ASSIGN_MOD,
-    Token.ASSIGN_MUL,
-    Token.ASSIGN_DIV,
-    Token.ASSIGN_INT_DIV,
-    Token.ASSIGN_POW,
-
-    Token.ASSIGN_XOR,
-    Token.ASSIGN_OR,
-    Token.ASSIGN_AND,
-    Token.ASSIGN_LSHIFT,
-    Token.ASSIGN_RSHIFT,
-])
-
-const AssignOperatorToRegular = Object.freeze({
-    [Token.ASSIGN]: "",
-
-    [Token.ASSIGN_ADD]: Token.ADD,
-    [Token.ASSIGN_SUB]: Token.SUB,
-    [Token.ASSIGN_MOD]: Token.MOD,
-    [Token.ASSIGN_MUL]: Token.MUL,
-    [Token.ASSIGN_DIV]: Token.DIV,
-    [Token.ASSIGN_INT_DIV]: Token.INT_DIV,
-    [Token.ASSIGN_POW]: Token.POW,
-
-    [Token.ASSIGN_XOR]: Token.XOR,
-    [Token.ASSIGN_OR]: Token.OR,
-    [Token.ASSIGN_AND]: Token.AND,
-    [Token.ASSIGN_LSHIFT]: Token.LSHIFT,
-    [Token.ASSIGN_RSHIFT]: Token.RSHIFT
-})
-
-const OperatorsCharacters = ":,+-*/><!=|&^~%()[]{}"
-
-const Types = Object.freeze([
-    Token.TYPE_INT,
-    Token.TYPE_FLOAT,
-    Token.TYPE_BOOL,
-    Token.TYPE_VEC2,
-    Token.TYPE_VEC3,
-    Token.TYPE_VEC4,
-    Token.TYPE_MAT3,
-    Token.TYPE_MAT4,
-    Token.TYPE_QUAT,
-])
-
-const PossibleUnaryOperators = Object.freeze([
-    Token.ADD,
-    Token.SUB,
-    Token.NOT,
-    Token.LOGIC_NOT,
-    Token.INCREMENT,
-    Token.DECREMENT
-])
-
-function isOperator(token) {
-    return Operators.includes(token?.type ?? token)
-}
-
-function isAssignOperator(token) {
-    return AssignOperators.includes(token?.type ?? token)
-}
-
-function convertAssignOperatorToRegular(token) {
-    return AssignOperatorToRegular[token?.type ?? token]
-}
-
-function isType(token) {
-    return Types.includes(token?.type ?? token)
-}
-
-function canBeUnaryOperator(token) {
-    return PossibleUnaryOperators.includes(token?.type ?? token)
-}
 
 class TokenizerTemplate {
     #allowedCharacters
@@ -335,7 +185,7 @@ const Tokenizers = Object.freeze({
         [ Characters, Digits ],
         [ Characters ],
         function(i, buffer, pushToken) {
-            if(Operators.includes(buffer) || Types.includes(buffer))
+            if(ReservedSequences.includes(buffer))
                 pushToken(buffer) // buffer passed as token type
             else
                 pushToken(Token.NAME, buffer)
@@ -360,14 +210,14 @@ const Tokenizers = Object.freeze({
         [ OperatorsCharacters ],
         [ OperatorsCharacters ],
         function(i, buffer, pushToken, pushError) {
-            if(Operators.includes(buffer)) {
+            if(ReservedSequences.includes(buffer)) {
                 pushToken(buffer) // buffer passed as token type
             } else {
                 pushError(`invalid operator '${buffer}'`)
             }
         },
         function(buffer) {
-            return Operators.includes(buffer)
+            return ReservedSequences.includes(buffer)
         }
     ),
 

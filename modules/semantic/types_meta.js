@@ -18,481 +18,482 @@
 
  ***/
 
-import {Token} from "../parse/lexer.js"
+import Types from "../constructions/types.js"
+import {RegularOperators} from "../constructions/operators.js"
 
 export const BinaryTable = Object.freeze({
-    [Token.TYPE_INT] : {
-        [Token.ADD] : {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+    [Types.INT] : {
+        [RegularOperators.ADD] : {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.NUM,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.SUB] : {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.SUB] : {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.NUM,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.MOD] : {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT
+        [RegularOperators.MOD] : {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.NUM
         },
 
-        [Token.MUL] : {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4,
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT,
-            [Token.TYPE_MAT3]: Token.TYPE_MAT3,
-            [Token.TYPE_MAT4]: Token.TYPE_MAT4
+        [RegularOperators.MUL] : {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.NUM,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4,
+            [Types.QUAT]: Types.QUAT,
+            [Types.MAT3]: Types.MAT3,
+            [Types.MAT4]: Types.MAT4
         },
 
-        [Token.DIV] : {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4,
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT,
-            [Token.TYPE_MAT3]: Token.TYPE_MAT3,
-            [Token.TYPE_MAT4]: Token.TYPE_MAT4
+        [RegularOperators.DIV] : {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.NUM,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4,
+            [Types.QUAT]: Types.QUAT,
+            [Types.MAT3]: Types.MAT3,
+            [Types.MAT4]: Types.MAT4
         },
 
-        [Token.INT_DIV] : {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_INT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4,
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT,
-            [Token.TYPE_MAT3]: Token.TYPE_MAT3,
-            [Token.TYPE_MAT4]: Token.TYPE_MAT4
+        [RegularOperators.INT_DIV] : {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.INT,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4,
+            [Types.QUAT]: Types.QUAT,
+            [Types.MAT3]: Types.MAT3,
+            [Types.MAT4]: Types.MAT4
         },
 
-        [Token.POW] : {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT
+        [RegularOperators.POW] : {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.NUM
         },
 
-        [Token.XOR] : {
-            [Token.TYPE_INT]: Token.TYPE_INT
+        [RegularOperators.XOR] : {
+            [Types.INT]: Types.INT
         },
 
-        [Token.OR] : {
-            [Token.TYPE_INT]: Token.TYPE_INT
+        [RegularOperators.OR] : {
+            [Types.INT]: Types.INT
         },
 
-        [Token.AND] : {
-            [Token.TYPE_INT]: Token.TYPE_INT
+        [RegularOperators.AND] : {
+            [Types.INT]: Types.INT
         },
 
-        [Token.LSHIFT] : {
-            [Token.TYPE_INT]: Token.TYPE_INT
+        [RegularOperators.LSHIFT] : {
+            [Types.INT]: Types.INT
         },
 
-        [Token.RSHIFT] : {
-            [Token.TYPE_INT]: Token.TYPE_INT
+        [RegularOperators.RSHIFT] : {
+            [Types.INT]: Types.INT
         }
     },
 
-    [Token.TYPE_FLOAT]: {
-        [Token.ADD] : {
-            [Token.TYPE_INT]: Token.TYPE_FLOAT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+    [Types.NUM]: {
+        [RegularOperators.ADD] : {
+            [Types.INT]: Types.NUM,
+            [Types.NUM]: Types.NUM,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.SUB] : {
-            [Token.TYPE_INT]: Token.TYPE_FLOAT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.SUB] : {
+            [Types.INT]: Types.NUM,
+            [Types.NUM]: Types.NUM,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.MOD] : {
-            [Token.TYPE_INT]: Token.TYPE_FLOAT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT
+        [RegularOperators.MOD] : {
+            [Types.INT]: Types.NUM,
+            [Types.NUM]: Types.NUM
         },
 
-        [Token.MUL] : {
-            [Token.TYPE_INT]: Token.TYPE_FLOAT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4,
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT,
-            [Token.TYPE_MAT3]: Token.TYPE_MAT3,
-            [Token.TYPE_MAT4]: Token.TYPE_MAT4
+        [RegularOperators.MUL] : {
+            [Types.INT]: Types.NUM,
+            [Types.NUM]: Types.NUM,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4,
+            [Types.QUAT]: Types.QUAT,
+            [Types.MAT3]: Types.MAT3,
+            [Types.MAT4]: Types.MAT4
         },
 
-        [Token.DIV] : {
-            [Token.TYPE_INT]: Token.TYPE_FLOAT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4,
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT,
-            [Token.TYPE_MAT3]: Token.TYPE_MAT3,
-            [Token.TYPE_MAT4]: Token.TYPE_MAT4
+        [RegularOperators.DIV] : {
+            [Types.INT]: Types.NUM,
+            [Types.NUM]: Types.NUM,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4,
+            [Types.QUAT]: Types.QUAT,
+            [Types.MAT3]: Types.MAT3,
+            [Types.MAT4]: Types.MAT4
         },
 
-        [Token.INT_DIV] : {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_INT,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4,
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT,
-            [Token.TYPE_MAT3]: Token.TYPE_MAT3,
-            [Token.TYPE_MAT4]: Token.TYPE_MAT4
+        [RegularOperators.INT_DIV] : {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.INT,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4,
+            [Types.QUAT]: Types.QUAT,
+            [Types.MAT3]: Types.MAT3,
+            [Types.MAT4]: Types.MAT4
         },
 
-        [Token.POW] : {
-            [Token.TYPE_INT]: Token.TYPE_FLOAT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT
+        [RegularOperators.POW] : {
+            [Types.INT]: Types.NUM,
+            [Types.NUM]: Types.NUM
         }
     },
 
-    [Token.TYPE_BOOL]: {
-        [Token.EQL]: {
-            [Token.TYPE_BOOL]: Token.TYPE_BOOL
+    [Types.BOOL]: {
+        [RegularOperators.EQL]: {
+            [Types.BOOL]: Types.BOOL
         },
 
-        [Token.NEQL]: {
-            [Token.TYPE_BOOL]: Token.TYPE_BOOL
+        [RegularOperators.NEQL]: {
+            [Types.BOOL]: Types.BOOL
         },
 
-        [Token.GRTR]: {
-            [Token.TYPE_BOOL]: Token.TYPE_BOOL
+        [RegularOperators.GRTR]: {
+            [Types.BOOL]: Types.BOOL
         },
 
-        [Token.LESS]: {
-            [Token.TYPE_BOOL]: Token.TYPE_BOOL
+        [RegularOperators.LESS]: {
+            [Types.BOOL]: Types.BOOL
         },
 
-        [Token.GRTR_OR_EQL]: {
-            [Token.TYPE_BOOL]: Token.TYPE_BOOL
+        [RegularOperators.GRTR_OR_EQL]: {
+            [Types.BOOL]: Types.BOOL
         },
 
-        [Token.LESS_OR_EQL]: {
-            [Token.TYPE_BOOL]: Token.TYPE_BOOL
+        [RegularOperators.LESS_OR_EQL]: {
+            [Types.BOOL]: Types.BOOL
         },
 
-        [Token.LOGIC_AND]: {
-            [Token.TYPE_BOOL]: Token.TYPE_BOOL
+        [RegularOperators.LOGIC_AND]: {
+            [Types.BOOL]: Types.BOOL
         },
 
-        [Token.LOGIC_OR]: {
-            [Token.TYPE_BOOL]: Token.TYPE_BOOL
+        [RegularOperators.LOGIC_OR]: {
+            [Types.BOOL]: Types.BOOL
         }
     },
 
-    [Token.TYPE_VEC2]: {
-        [Token.ADD]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC2,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+    [Types.VEC2]: {
+        [RegularOperators.ADD]: {
+            [Types.INT]: Types.VEC2,
+            [Types.NUM]: Types.VEC2,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.SUB]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC2,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.SUB]: {
+            [Types.INT]: Types.VEC2,
+            [Types.NUM]: Types.VEC2,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.MUL]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC2,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.MUL]: {
+            [Types.INT]: Types.VEC2,
+            [Types.NUM]: Types.VEC2,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.DIV]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC2,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.DIV]: {
+            [Types.INT]: Types.VEC2,
+            [Types.NUM]: Types.VEC2,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.INT_DIV]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC2,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC2,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.INT_DIV]: {
+            [Types.INT]: Types.VEC2,
+            [Types.NUM]: Types.VEC2,
+            [Types.VEC2]: Types.VEC2,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         }
     },
 
-    [Token.TYPE_VEC3]: {
-        [Token.ADD]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC3,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+    [Types.VEC3]: {
+        [RegularOperators.ADD]: {
+            [Types.INT]: Types.VEC3,
+            [Types.NUM]: Types.VEC3,
+            [Types.VEC2]: Types.VEC3,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.SUB]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC3,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.SUB]: {
+            [Types.INT]: Types.VEC3,
+            [Types.NUM]: Types.VEC3,
+            [Types.VEC2]: Types.VEC3,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.MUL]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC3,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.MUL]: {
+            [Types.INT]: Types.VEC3,
+            [Types.NUM]: Types.VEC3,
+            [Types.VEC2]: Types.VEC3,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.DIV]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC3,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.DIV]: {
+            [Types.INT]: Types.VEC3,
+            [Types.NUM]: Types.VEC3,
+            [Types.VEC2]: Types.VEC3,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.INT_DIV]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC3,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.INT_DIV]: {
+            [Types.INT]: Types.VEC3,
+            [Types.NUM]: Types.VEC3,
+            [Types.VEC2]: Types.VEC3,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4
         }
     },
 
-    [Token.TYPE_VEC4]: {
-        [Token.ADD]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC4,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+    [Types.VEC4]: {
+        [RegularOperators.ADD]: {
+            [Types.INT]: Types.VEC4,
+            [Types.NUM]: Types.VEC4,
+            [Types.VEC2]: Types.VEC4,
+            [Types.VEC3]: Types.VEC4,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.SUB]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC4,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.SUB]: {
+            [Types.INT]: Types.VEC4,
+            [Types.NUM]: Types.VEC4,
+            [Types.VEC2]: Types.VEC4,
+            [Types.VEC3]: Types.VEC4,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.MUL]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC4,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4,
-            [Token.TYPE_MAT4]: Token.TYPE_VEC4
+        [RegularOperators.MUL]: {
+            [Types.INT]: Types.VEC4,
+            [Types.NUM]: Types.VEC4,
+            [Types.VEC2]: Types.VEC4,
+            [Types.VEC3]: Types.VEC4,
+            [Types.VEC4]: Types.VEC4,
+            [Types.MAT4]: Types.VEC4
         },
 
-        [Token.DIV]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC4,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.DIV]: {
+            [Types.INT]: Types.VEC4,
+            [Types.NUM]: Types.VEC4,
+            [Types.VEC2]: Types.VEC4,
+            [Types.VEC3]: Types.VEC4,
+            [Types.VEC4]: Types.VEC4
         },
 
-        [Token.INT_DIV]: {
-            [Token.TYPE_INT]: Token.TYPE_VEC4,
-            [Token.TYPE_FLOAT]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC2]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4
+        [RegularOperators.INT_DIV]: {
+            [Types.INT]: Types.VEC4,
+            [Types.NUM]: Types.VEC4,
+            [Types.VEC2]: Types.VEC4,
+            [Types.VEC3]: Types.VEC4,
+            [Types.VEC4]: Types.VEC4
         }
     },
 
-    [Token.TYPE_MAT3]: {
-        [Token.ADD]: {
-            [Token.TYPE_MAT3]: Token.TYPE_MAT3
+    [Types.MAT3]: {
+        [RegularOperators.ADD]: {
+            [Types.MAT3]: Types.MAT3
         },
 
-        [Token.SUB]: {
-            [Token.TYPE_MAT3]: Token.TYPE_MAT3
+        [RegularOperators.SUB]: {
+            [Types.MAT3]: Types.MAT3
         },
 
-        [Token.MUL]: {
-            [Token.TYPE_INT]: Token.TYPE_MAT3,
-            [Token.TYPE_FLOAT]: Token.TYPE_MAT3,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4,
-            [Token.TYPE_MAT3]: Token.TYPE_MAT3,
+        [RegularOperators.MUL]: {
+            [Types.INT]: Types.MAT3,
+            [Types.NUM]: Types.MAT3,
+            [Types.VEC3]: Types.VEC3,
+            [Types.VEC4]: Types.VEC4,
+            [Types.MAT3]: Types.MAT3,
         }
     },
 
-    [Token.TYPE_MAT4]: {
-        [Token.ADD]: {
-            [Token.TYPE_MAT4]: Token.TYPE_MAT4
+    [Types.MAT4]: {
+        [RegularOperators.ADD]: {
+            [Types.MAT4]: Types.MAT4
         },
 
-        [Token.SUB]: {
-            [Token.TYPE_MAT4]: Token.TYPE_MAT4
+        [RegularOperators.SUB]: {
+            [Types.MAT4]: Types.MAT4
         },
 
-        [Token.MUL]: {
-            [Token.TYPE_INT]: Token.TYPE_MAT4,
-            [Token.TYPE_FLOAT]: Token.TYPE_MAT4,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC4,
-            [Token.TYPE_VEC4]: Token.TYPE_VEC4,
-            [Token.TYPE_MAT4]: Token.TYPE_MAT4,
+        [RegularOperators.MUL]: {
+            [Types.INT]: Types.MAT4,
+            [Types.NUM]: Types.MAT4,
+            [Types.VEC3]: Types.VEC4,
+            [Types.VEC4]: Types.VEC4,
+            [Types.MAT4]: Types.MAT4,
         }
     },
 
-    [Token.TYPE_QUAT]: {
-        [Token.ADD]: {
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT
+    [Types.QUAT]: {
+        [RegularOperators.ADD]: {
+            [Types.QUAT]: Types.QUAT
         },
 
-        [Token.SUB]: {
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT
+        [RegularOperators.SUB]: {
+            [Types.QUAT]: Types.QUAT
         },
 
-        [Token.MUL]: {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT,
-            [Token.TYPE_VEC3]: Token.TYPE_VEC3
+        [RegularOperators.MUL]: {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.NUM,
+            [Types.QUAT]: Types.QUAT,
+            [Types.VEC3]: Types.VEC3
         },
 
-        [Token.DIV]: {
-            [Token.TYPE_INT]: Token.TYPE_INT,
-            [Token.TYPE_FLOAT]: Token.TYPE_FLOAT,
-            [Token.TYPE_QUAT]: Token.TYPE_QUAT
+        [RegularOperators.DIV]: {
+            [Types.INT]: Types.INT,
+            [Types.NUM]: Types.NUM,
+            [Types.QUAT]: Types.QUAT
         },
 
-        [Token.POW]: {
-            [Token.TYPE_INT]: Token.TYPE_QUAT,
-            [Token.TYPE_FLOAT]: Token.TYPE_QUAT
+        [RegularOperators.POW]: {
+            [Types.INT]: Types.QUAT,
+            [Types.NUM]: Types.QUAT
         }
     }
 })
 
 export const UnaryTable = Object.freeze({
-    [Token.TYPE_INT]: [
-        Token.ADD,
-        Token.SUB,
-        Token.NOT,
-        Token.INCREMENT,
-        Token.DECREMENT
+    [Types.INT]: [
+        RegularOperators.ADD,
+        RegularOperators.SUB,
+        RegularOperators.NOT,
+        RegularOperators.INCREMENT,
+        RegularOperators.DECREMENT
     ],
 
-    [Token.TYPE_FLOAT]: [
-        Token.ADD,
-        Token.SUB
+    [Types.NUM]: [
+        RegularOperators.ADD,
+        RegularOperators.SUB
     ],
 
-    [Token.TYPE_BOOL]: [
-        Token.LOGIC_NOT
+    [Types.BOOL]: [
+        RegularOperators.LOGIC_NOT
     ],
 
-    [Token.TYPE_VEC2]: [
-        Token.ADD,
-        Token.SUB
+    [Types.VEC2]: [
+        RegularOperators.ADD,
+        RegularOperators.SUB
     ],
 
-    [Token.TYPE_VEC3]: [
-        Token.ADD,
-        Token.SUB
+    [Types.VEC3]: [
+        RegularOperators.ADD,
+        RegularOperators.SUB
     ],
 
-    [Token.TYPE_VEC4]: [
-        Token.ADD,
-        Token.SUB
+    [Types.VEC4]: [
+        RegularOperators.ADD,
+        RegularOperators.SUB
     ],
 
-    [Token.TYPE_QUAT]: [
-        Token.ADD,
-        Token.SUB
+    [Types.QUAT]: [
+        RegularOperators.ADD,
+        RegularOperators.SUB
     ],
 
-    [Token.TYPE_MAT3]: [
-        Token.ADD,
-        Token.SUB
+    [Types.MAT3]: [
+        RegularOperators.ADD,
+        RegularOperators.SUB
     ],
 
-    [Token.TYPE_MAT4]: [
-        Token.ADD,
-        Token.SUB
+    [Types.MAT4]: [
+        RegularOperators.ADD,
+        RegularOperators.SUB
     ]
 })
 
 export const ConstructorsTable = Object.freeze({
-    [Token.TYPE_INT]: [
-        [ Token.TYPE_FLOAT ],
-        [ Token.TYPE_BOOL ]
+    [Types.INT]: [
+        [ Types.NUM ],
+        [ Types.BOOL ]
     ],
 
-    [Token.TYPE_BOOL]: [
-        [ Token.TYPE_INT ]
+    [Types.BOOL]: [
+        [ Types.INT ]
     ],
 
-    [Token.TYPE_VEC2]: [
-        [ Token.TYPE_FLOAT, Token.TYPE_FLOAT ],
-        [ Token.TYPE_VEC2 ]
+    [Types.VEC2]: [
+        [ Types.NUM, Types.NUM ],
+        [ Types.VEC2 ]
     ],
 
-    [Token.TYPE_VEC3]: [
-        [ Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT ],
-        [ Token.TYPE_VEC2, Token.TYPE_FLOAT ],
-        [ Token.TYPE_VEC3 ]
+    [Types.VEC3]: [
+        [ Types.NUM, Types.NUM, Types.NUM ],
+        [ Types.VEC2, Types.NUM ],
+        [ Types.VEC3 ]
     ],
 
-    [Token.TYPE_VEC4]: [
-        [ Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT ],
-        [ Token.TYPE_VEC2, Token.TYPE_FLOAT, Token.TYPE_FLOAT ],
-        [ Token.TYPE_VEC3, Token.TYPE_FLOAT ],
-        [ Token.TYPE_VEC4 ]
+    [Types.VEC4]: [
+        [ Types.NUM, Types.NUM, Types.NUM, Types.NUM ],
+        [ Types.VEC2, Types.NUM, Types.NUM ],
+        [ Types.VEC3, Types.NUM ],
+        [ Types.VEC4 ]
     ],
 
-    [Token.TYPE_QUAT]: [
-        [ Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT ]
+    [Types.QUAT]: [
+        [ Types.NUM, Types.NUM, Types.NUM, Types.NUM ]
     ],
 
-    [Token.TYPE_MAT3]: [
+    [Types.MAT3]: [
         [
-            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
-            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
-            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT
+            Types.NUM, Types.NUM, Types.NUM,
+            Types.NUM, Types.NUM, Types.NUM,
+            Types.NUM, Types.NUM, Types.NUM
         ]
     ],
 
-    [Token.TYPE_MAT4]: [
+    [Types.MAT4]: [
         [
-            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
-            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
-            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT,
-            Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT, Token.TYPE_FLOAT
+            Types.NUM, Types.NUM, Types.NUM, Types.NUM,
+            Types.NUM, Types.NUM, Types.NUM, Types.NUM,
+            Types.NUM, Types.NUM, Types.NUM, Types.NUM,
+            Types.NUM, Types.NUM, Types.NUM, Types.NUM
         ]
     ]
 })
 
 export const IndexableTypesTable = Object.freeze({
-    [Token.TYPE_VEC2]: Token.TYPE_FLOAT,
-    [Token.TYPE_VEC3]: Token.TYPE_FLOAT,
-    [Token.TYPE_VEC4]: Token.TYPE_FLOAT,
-    [Token.TYPE_QUAT]: Token.TYPE_FLOAT,
-    [Token.TYPE_MAT3]: Token.TYPE_FLOAT,
-    [Token.TYPE_MAT4]: Token.TYPE_FLOAT
+    [Types.VEC2]: Types.NUM,
+    [Types.VEC3]: Types.NUM,
+    [Types.VEC4]: Types.NUM,
+    [Types.QUAT]: Types.NUM,
+    [Types.MAT3]: Types.NUM,
+    [Types.MAT4]: Types.NUM
 })

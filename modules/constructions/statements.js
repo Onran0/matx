@@ -17,7 +17,6 @@
  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  ***/
-import {parseExpression} from "../parse/expressions_parser.js";
 
 export class Statement {
     #startToken

@@ -18,7 +18,6 @@
 
  ***/
 
-import {Token} from '../parse/lexer.js'
 import {parse} from '../parse/parser.js'
 import {analyze} from '../semantic/analyzer.js'
 
