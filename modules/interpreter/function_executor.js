@@ -25,11 +25,16 @@ import {getVarType, getVar, setVar, setupVar} from "./vars_manager.js";
 
 import  {AssignOperators,convertAssignToRegular} from "../constructions/operators.js";
 
-import {executeExpression} from "./expressions_executor.js";
 import {BinaryExpression, IndexExpression, NumberExpression, VariableExpression} from "../constructions/expressions.js";
 import {IndexableTypesSize} from "../semantic/types_meta.js";
 
-class Executor {
+let executeExpression
+
+export function setExpressionsExecutor(executor) {
+    executeExpression = executor;
+}
+
+class Function_executor {
     #statementType
 
     constructor(statementType) {
@@ -43,7 +48,7 @@ class Executor {
     }
 }
 
-class VariableDeclarationExecutor extends Executor {
+class VariableDeclarationExecutor extends Function_executor {
     constructor() {
         super(statements.VariableDeclaration)
     }
@@ -53,7 +58,7 @@ class VariableDeclarationExecutor extends Executor {
     }
 }
 
-class ReturnExecutor extends Executor {
+class ReturnExecutor extends Function_executor {
     constructor() {
         super(statements.Return)
     }
@@ -63,7 +68,7 @@ class ReturnExecutor extends Executor {
     }
 }
 
-class BlockExecutor extends Executor {
+class BlockExecutor extends Function_executor {
     constructor() {
         super(statements.Block)
     }
@@ -73,7 +78,7 @@ class BlockExecutor extends Executor {
     }
 }
 
-class VariableAssignExecutor extends Executor {
+class VariableAssignExecutor extends Function_executor {
     constructor() {
         super(statements.VariableAssign)
     }

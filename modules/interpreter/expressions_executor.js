@@ -20,6 +20,12 @@
 
 import * as expressions from "../constructions/expressions.js"
 
+let executeFunction
+
+export function setFunctionExecutor(executor) {
+    executeFunction = executor;
+}
+
 class ExpressionsExecutor {
     #expressionType
 

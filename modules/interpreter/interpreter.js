@@ -21,9 +21,12 @@
 import {parse} from '../parse/parser.js'
 import {analyze} from '../semantic/analyzer.js'
 
-import {executeFunction} from "./executor.js";
+import {executeFunction, setExpressionsExecutor} from "./function_executor.js";
+import {executeExpression, setFunctionExecutor} from "./expressions_executor.js";
 import {setupContext} from "./context_manager.js";
 
+setExpressionsExecutor(executeExpression)
+setFunctionExecutor(executeFunction)
 
 function interpretAST(statements, context) {
     setupContext(context)
