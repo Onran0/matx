@@ -18,27 +18,17 @@
 
  ***/
 
-export function setupContext(context) {
-    context.env ??= {
-        vars: { },
-        functions: { }
-    }
-
-    for(const child of context.childContexts)
-        setupContext(child)
+export function getFunctionInfo(context, name) {
+    if(context.env.functions[name] != null) {
+        return context.env.functions[name];
+    } else if(context.parentContext != null) return getFunctionInfo(context.parentContext, name);
 }
 
-export function getContextOfStatement(context, statement) {
-    if(context.statementRef === statement)
-        return context
-    else if(context.childContexts.length > 0) {
-        for(const child of context.childContexts) {
-            const ctx = getContextOfStatement(child, statement)
-
-            if(ctx != null)
-                return ctx
-        }
-    }
-
-    return null
+export function declareFunction(context, name, args, statements, returnType) {
+    context.env.functions[name] = Object.freeze({
+        name: name,
+        args: args,
+        statements: statements,
+        returnType: returnType
+    })
 }

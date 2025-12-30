@@ -22,6 +22,7 @@ import * as statements from "../constructions/statements.js";
 
 import {setupContext,getContextOfStatement} from "./context_manager.js";
 import {getVarType, getVar, setVar, setupVar} from "./vars_manager.js";
+import {declareFunction} from "./functions_manager.js";
 
 import  {AssignOperators,convertAssignToRegular} from "../constructions/operators.js";
 
@@ -31,10 +32,10 @@ import {IndexableTypesSize} from "../semantic/types_meta.js";
 let executeExpression
 
 export function setExpressionsExecutor(executor) {
-    executeExpression = executor;
+    executeExpression = executor
 }
 
-class Function_executor {
+class FunctionExecutor {
     #statementType
 
     constructor(statementType) {
@@ -48,45 +49,58 @@ class Function_executor {
     }
 }
 
-class VariableDeclarationExecutor extends Function_executor {
+class VariableDeclarationExecutor extends FunctionExecutor {
     constructor() {
         super(statements.VariableDeclaration)
     }
 
     execute(context, statement, pushError) {
-        setupVar(statement.name, statement.type, executeExpression(context, statement.expression, pushError, statement).value)
+        setupVar(statement.statement.name, statement.statement.type, executeExpression(context, statement.statement.expression, pushError, statement).value)
     }
 }
 
-class ReturnExecutor extends Function_executor {
+class FunctionDeclarationExecutor extends FunctionExecutor {
+    constructor() {
+        super(statements.FunctionDeclaration)
+    }
+
+    execute(context, statement, pushError) {
+        declareFunction(
+            context, statement.statement.name, statement.statement.args, statement.statements,
+            getContextOfStatement(context, statement).result
+        )
+    }
+}
+
+class ReturnExecutor extends FunctionExecutor {
     constructor() {
         super(statements.Return)
     }
 
     execute(context, statement, pushError) {
-        context.env.result = executeFunction(context, statement, statement.expression, pushError)
+        context.env.result = executeExpression(context, statement.statement.expression, pushError, statement)
     }
 }
 
-class BlockExecutor extends Function_executor {
+class BlockExecutor extends FunctionExecutor {
     constructor() {
         super(statements.Block)
     }
 
     execute(context, statement, pushError) {
-        executeFunction(getContextOfStatement(context, statement, [ ], pushError))
+        executeFunction(getContextOfStatement(context, statement), statement.statement.statements, pushError)
     }
 }
 
-class VariableAssignExecutor extends Function_executor {
+class VariableAssignExecutor extends FunctionExecutor {
     constructor() {
         super(statements.VariableAssign)
     }
 
     execute(context, statement, pushError) {
-        const name = statement.name
-        let result = executeExpression(context, statement.expression, pushError, statement)
-        const index = statement.indexExpression != null ? executeFunction(context, statement, statement.indexExpression, pushError).value : null
+        const name = statement.statement.name
+        let result = executeExpression(context, statement.statement.expression, pushError, statement)
+        const index = statement.statement.indexExpression != null ? executeExpression(context, statement.statement.indexExpression, pushError, statement).value : null
 
         const varType = getVarType(context, name)
 
@@ -98,7 +112,7 @@ class VariableAssignExecutor extends Function_executor {
             return
         }
 
-        if(statement.operation !== AssignOperators.ASSIGN) {
+        if(statement.statement.operation !== AssignOperators.ASSIGN) {
             let leftExpr = new VariableExpression(name)
 
             if(index != null)
@@ -109,7 +123,7 @@ class VariableAssignExecutor extends Function_executor {
                 new BinaryExpression(
                     leftExpr,
                     result.valueExpression,
-                    convertAssignToRegular(statement.operation)
+                    convertAssignToRegular(statement.statement.operation)
                 ),
                 pushError, statement
             )
@@ -131,6 +145,7 @@ class VariableAssignExecutor extends Function_executor {
 
 const Executors = Object.freeze([
     new VariableDeclarationExecutor(),
+    new FunctionDeclarationExecutor(),
     new ReturnExecutor(),
     new BlockExecutor(),
     new VariableAssignExecutor()
