@@ -137,7 +137,9 @@ export const BinaryTable = Object.freeze({
 export const UnaryTable = Object.freeze({
     [RegularOperators.ADD]: function(a) { return a },
     [RegularOperators.SUB]: function(a) { return -a },
-    [RegularOperators.NOT]: function(a) { return ~a }
+    [RegularOperators.NOT]: function(a) { return ~a },
+    [RegularOperators.INCREMENT]: function(a) { return a + 1 },
+    [RegularOperators.DECREMENT]: function(a) { return a - 1 }
 })
 
 export const ConstructorsTable = Object.freeze([

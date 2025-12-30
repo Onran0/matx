@@ -455,12 +455,16 @@ export const UnaryTable = Object.freeze({
     [Types.INT]: [
         RegularOperators.ADD,
         RegularOperators.SUB,
-        RegularOperators.NOT
+        RegularOperators.NOT,
+        RegularOperators.INCREMENT,
+        RegularOperators.DECREMENT
     ],
 
     [Types.NUM]: [
         RegularOperators.ADD,
-        RegularOperators.SUB
+        RegularOperators.SUB,
+        RegularOperators.INCREMENT,
+        RegularOperators.DECREMENT
     ],
 
     [Types.BOOL]: [
