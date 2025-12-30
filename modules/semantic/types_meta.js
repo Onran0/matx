@@ -502,6 +502,18 @@ export const UnaryTable = Object.freeze({
     ]
 })
 
+export const ModifyingUnaryTable = Object.freeze({
+    [Types.INT]: [
+        RegularOperators.INCREMENT,
+        RegularOperators.DECREMENT
+    ],
+
+    [Types.NUM]: [
+        RegularOperators.INCREMENT,
+        RegularOperators.DECREMENT
+    ]
+})
+
 export const ConstructorsTable = Object.freeze({
     [Types.INT]: [
         [ Types.NUM ],
