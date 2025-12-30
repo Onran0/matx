@@ -240,14 +240,24 @@ export function analyze(ast, parentContext, pushError) {
         } else pushError(statement, "can't analyze statement of this type")
     }
 
+    let rawReplace = false
+
     if(
-        parentContext == null &&
-        context.result !== Types.NUM &&
-        context.result !== Types.INT
+        context.result == null &&
+        (context.statementRef == null || context.statementRef instanceof statements.FunctionDeclaration)
     ) {
-        pushError(ast[ast.length - 1], context.result == null ? "root context must have a return" : `the root context must return a value of number type`)
-        errors[errors.length - 1].msg = errors[errors.length - 1].rawMsg
+        pushError(ast[ast.length - 1], "root / function context must have a return")
+        rawReplace = true
+    } else if(parentContext == null &&
+        context.result !== Types.NUM &&
+        context.result !== Types.INT)
+    {
+        pushError(ast[ast.length - 1], `the root context must return a value of number type`)
+        rawReplace = true
     }
+
+    if(rawReplace)
+        errors[errors.length - 1].msg = errors[errors.length - 1].rawMsg
 
     return [ context, errors ]
 }
